@@ -8,8 +8,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.*;
 import frc.robot.controls.Driver;
 import frc.robot.controls.Operator;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.ShuffleboardManager;
 
 /**
@@ -21,6 +23,7 @@ import frc.robot.util.ShuffleboardManager;
 public class Robot extends TimedRobot {
   private Command m_autoCommand;
   public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
+  public static Drivetrain drive = new Drivetrain();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -36,6 +39,13 @@ public class Robot extends TimedRobot {
 
     Driver.configureControls();
     Operator.configureControls();
+
+    drive.setDefaultCommand(new DefaultDriveCommand(
+      drive,
+      () -> Driver.getForwardTranslation() * Drivetrain.MAX_VELOCITY_METERS_PER_SECOND,
+      () -> Driver.getSideTranslation() * Drivetrain.MAX_VELOCITY_METERS_PER_SECOND,
+      () -> Driver.getRotation() * Drivetrain.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    ));
   }
 
   /**
