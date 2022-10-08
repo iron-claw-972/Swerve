@@ -11,9 +11,7 @@ import lib.controllers.GameController.Button;
 public class Driver {
   private static GameController driver = new GameController(Constants.oi.kDriverJoy);
 
-  public static void configureControls() {    
-    // Back button zeros the gyroscope
-    driver.get(Button.BACK).whenPressed(Robot.drive::zeroGyroscope);
+  public static void configureControls() {
   }
 
   public static double getForwardTranslation() {

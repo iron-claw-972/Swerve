@@ -40,12 +40,7 @@ public class Robot extends TimedRobot {
     Driver.configureControls();
     Operator.configureControls();
 
-    drive.setDefaultCommand(new DefaultDriveCommand(
-      drive,
-      () -> Driver.getForwardTranslation() * Drivetrain.MAX_VELOCITY_METERS_PER_SECOND,
-      () -> Driver.getSideTranslation() * Drivetrain.MAX_VELOCITY_METERS_PER_SECOND,
-      () -> Driver.getRotation() * Drivetrain.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    ));
+    drive.setDefaultCommand(new DefaultDriveCommand(drive));
   }
 
   /**

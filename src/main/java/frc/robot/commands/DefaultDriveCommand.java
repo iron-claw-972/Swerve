@@ -1,7 +1,11 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.Constants;
+import frc.robot.controls.Driver;
 import frc.robot.subsystems.Drivetrain;
 
 import java.util.function.DoubleSupplier;
@@ -9,37 +13,48 @@ import java.util.function.DoubleSupplier;
 public class DefaultDriveCommand extends CommandBase {
     private final Drivetrain m_drive;
 
-    private final DoubleSupplier m_translationXSupplier;
-    private final DoubleSupplier m_translationYSupplier;
-    private final DoubleSupplier m_rotationSupplier;
+    private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
-    public DefaultDriveCommand(Drivetrain drivetrainSubsystem,
-                               DoubleSupplier translationXSupplier,
-                               DoubleSupplier translationYSupplier,
-                               DoubleSupplier rotationSupplier) {
-        this.m_drive = drivetrainSubsystem;
-        this.m_translationXSupplier = translationXSupplier;
-        this.m_translationYSupplier = translationYSupplier;
-        this.m_rotationSupplier = rotationSupplier;
+    public DefaultDriveCommand(Drivetrain drive) {
+        this.m_drive = drive;
 
-        addRequirements(drivetrainSubsystem);
+        addRequirements(drive);
     }
 
     @Override
     public void execute() {
-        // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
-        m_drive.drive(
-                ChassisSpeeds.fromFieldRelativeSpeeds(
-                        m_translationXSupplier.getAsDouble(),
-                        m_translationYSupplier.getAsDouble(),
-                        m_rotationSupplier.getAsDouble(),
-                        m_drive.getGyroscopeRotation()
-                )
-        );
+        driveWithJoystick(true);
     }
+
+    private void driveWithJoystick(boolean fieldRelative) {
+        // Get the x speed. We are inverting this because Xbox controllers return
+        // negative values when we push forward.
+        final var xSpeed =
+            -m_xspeedLimiter.calculate(MathUtil.applyDeadband(Driver.getRawLeftY(), 0.02))
+                * Constants.drive.kMaxSpeed;
+    
+        // Get the y speed or sideways/strafe speed. We are inverting this because
+        // we want a positive value when we pull to the left. Xbox controllers
+        // return positive values when you pull to the right by default.
+        final var ySpeed =
+            -m_yspeedLimiter.calculate(MathUtil.applyDeadband(Driver.getRawLeftX(), 0.02))
+                * Constants.drive.kMaxSpeed;
+    
+        // Get the rate of angular rotation. We are inverting this because we want a
+        // positive value when we pull to the left (remember, CCW is positive in
+        // mathematics). Xbox controllers return positive values when you pull to
+        // the right by default.
+        final var rot =
+            -m_rotLimiter.calculate(MathUtil.applyDeadband(Driver.getRawRightX(), 0.02))
+                * Drivetrain.kMaxAngularSpeed;
+    
+        m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
+      }
 
     @Override
     public void end(boolean interrupted) {
-        m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+        m_drive.drive(0.0, 0.0, 0.0, false);
     }
 }

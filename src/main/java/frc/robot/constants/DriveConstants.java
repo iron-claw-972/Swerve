@@ -1,18 +1,10 @@
 package frc.robot.constants;
 
+import edu.wpi.first.math.util.Units;
+
 public class DriveConstants {
-  /**
-     * The left-to-right distance between the drivetrain wheels
-     *
-     * Should be measured from center to center.
-     */
-    public final double TRACKWIDTH_METERS = 0.57785;
-    /**
-     * The front-to-back distance between the drivetrain wheels.
-     *
-     * Should be measured from center to center.
-     */
-    public final double WHEELBASE_METERS = TRACKWIDTH_METERS; 
+    public final double KTrackWidth = Units.inchesToMeters(22.75);
+    public final double kMaxSpeed = 6380.0 / 60.0 / 6.75 * Units.inchesToMeters(4) * Math.PI;
 
     public final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 31;
     public final int FRONT_LEFT_MODULE_STEER_MOTOR = 14;
