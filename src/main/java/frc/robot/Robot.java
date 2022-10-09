@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
+import org.littletonrobotics.junction.io.*;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,7 +16,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.*;
 import frc.robot.controls.Driver;
 import frc.robot.controls.Operator;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.logging.DrivetrainIO;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.DrivetrainIOReal;
+import frc.robot.subsystems.drivetrain.DrivetrainIOSim;
 import frc.robot.util.ShuffleboardManager;
 
 /**
@@ -23,7 +31,7 @@ import frc.robot.util.ShuffleboardManager;
 public class Robot extends LoggedRobot {
   private Command m_autoCommand;
   public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
-  public static Drivetrain drive = new Drivetrain();
+  public static Drivetrain drive;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -32,7 +40,28 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
 
-    // This is really annoying so it's disabled
+    if (isReal()) {
+      drive = new Drivetrain(new DrivetrainIOReal());
+    } else {
+      drive = new Drivetrain(new DrivetrainIOSim());
+    }
+
+    setUseTiming(isReal()); // Run as fast as possible during replay
+    LoggedNetworkTables.getInstance().addTable("/SmartDashboard"); // Log & replay "SmartDashboard" values (no tables are logged by default).
+    Logger.getInstance().recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+
+    if (isReal()) {
+        Logger.getInstance().addDataReceiver(new ByteLogReceiver("/media/sda1/")); // Log to USB stick (name will be selected automatically)
+        Logger.getInstance().addDataReceiver(new LogSocketServer(5800)); // Provide log data over the network, viewable in Advantage Scope.
+    } else {
+        String path = ByteLogReplay.promptForPath(); // Prompt the user for a file path on the command line
+        Logger.getInstance().setReplaySource(new ByteLogReplay(path)); // Read log file for replay
+        Logger.getInstance().addDataReceiver(new ByteLogReceiver(ByteLogReceiver.addPathSuffix(path, "_sim"))); // Save replay results to a new log with the "_sim" suffix
+    }
+
+    Logger.getInstance().start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+
+    // This is really annoying so it's disabled 
     DriverStation.silenceJoystickConnectionWarning(true);
 
     shuffleboard.setup();
