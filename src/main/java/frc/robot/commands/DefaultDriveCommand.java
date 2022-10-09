@@ -20,13 +20,10 @@ public class DefaultDriveCommand extends CommandBase {
         this.m_drive = drive;
 
         addRequirements(drive);
-
-        System.out.println("Tesdasdast");
     }
 
     @Override
     public void execute() {
-        System.out.println("Test");
         driveWithJoystick(true);
     }
 
@@ -57,12 +54,12 @@ public class DefaultDriveCommand extends CommandBase {
             -m_rotLimiter.calculate(MathUtil.applyDeadband(Driver.getRawRightX(), 0.02))
                 * Drivetrain.kMaxAngularSpeed;
 
-        Logger.getInstance().recordOutput("DriveWithJoystick/RawLeftY", rawLeftY);
-        Logger.getInstance().recordOutput("DriveWithJoystick/RawLeftX", rawLeftX);
-        Logger.getInstance().recordOutput("DriveWithJoystick/RawRightX", rawRightX);
-        Logger.getInstance().recordOutput("DriveWithJoystick/xSpeed", xSpeed);
-        Logger.getInstance().recordOutput("DriveWithJoystick/ySpeed", ySpeed);
-        Logger.getInstance().recordOutput("DriveWithJoystick/rot", rot);
+        Logger.getInstance().recordOutput("DefaultDriveCommand/RawLeftY", rawLeftY);
+        Logger.getInstance().recordOutput("DefaultDriveCommand/RawLeftX", rawLeftX);
+        Logger.getInstance().recordOutput("DefaultDriveCommand/RawRightX", rawRightX);
+        Logger.getInstance().recordOutput("DefaultDriveCommand/xSpeed", xSpeed);
+        Logger.getInstance().recordOutput("DefaultDriveCommand/ySpeed", ySpeed);
+        Logger.getInstance().recordOutput("DefaultDriveCommand/rot", rot);
     
         m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
       }

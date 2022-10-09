@@ -9,8 +9,12 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
 import org.littletonrobotics.junction.io.LogSocketServer;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.DefaultDriveCommand;
@@ -31,6 +35,8 @@ public class Robot extends LoggedRobot {
     private Command m_autoCommand;
     public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
     public static Drivetrain drive;
+
+    private final Field2d m_field = new Field2d();
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -61,6 +67,17 @@ public class Robot extends LoggedRobot {
         drive.setDefaultCommand(new DefaultDriveCommand(drive));
     
         Logger.getInstance().start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+
+        Pose2d startPosition = new Pose2d(Units.inchesToMeters(30),Units.inchesToMeters(30), new Rotation2d(Units.degreesToRadians(0)));
+        m_field.setRobotPose(startPosition);
+
+        SmartDashboard.putData("Field", m_field);
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        SmartDashboard.putData("Field", m_field);
+        m_field.setRobotPose(drive.getDrivetrainIO().getOdometry());
     }
 
     /**
@@ -77,11 +94,11 @@ public class Robot extends LoggedRobot {
         // and running subsystem periodic() methods.  This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
-        System.out.println(CommandScheduler.getInstance().isScheduled(drive.getDefaultCommand()));
     }
 
     /**
-     * This function is called once each time the robot enters Disabled mode.
+     * This function is called once each time the robot en
+     * rs Disabled mode.
      */
     @Override
     public void disabledInit() {

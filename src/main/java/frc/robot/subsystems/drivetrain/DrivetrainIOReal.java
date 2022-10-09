@@ -46,7 +46,6 @@ public class DrivetrainIOReal implements DrivetrainIO {
     private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_navX.getRotation2d());
 
     public DrivetrainIOReal() {
-        System.out.println("Initialized DrivetrianIOReal");
         m_navX.reset();
     }
 

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.robot.Robot;
 import frc.robot.constants.Constants;
 
 public class SwerveModuleSim {
@@ -54,6 +55,7 @@ public class SwerveModuleSim {
     private double m_turnOutput;
 
     private double m_simTurnEncoderDistance;
+    private double m_simDriveEncoderDistance;
 
     public SwerveModuleSim(
         int driveMotorPort,
@@ -123,8 +125,8 @@ public class SwerveModuleSim {
 
     /** Simulate the SwerveModule */
     public void simulationPeriodic(double dt) {
-        m_steerMotorSim.setInputVoltage(m_turnOutput / Constants.swerve.kMaxAngularSpeed * 12.5);
-        m_driveMotorSim.setInputVoltage(m_driveOutput / Constants.drive.kMaxSpeed * 12.5);
+        m_steerMotorSim.setInputVoltage(m_turnOutput / Constants.swerve.kMaxAngularSpeed * RobotController.getBatteryVoltage());
+        m_driveMotorSim.setInputVoltage(m_driveOutput / Constants.drive.kMaxSpeed * RobotController.getBatteryVoltage());
 
         m_steerMotorSim.update(dt);
         m_driveMotorSim.update(dt);
@@ -134,7 +136,11 @@ public class SwerveModuleSim {
         m_absEncoderSim.setDistance(m_simTurnEncoderDistance);
         m_absEncoderSim.set(m_steerMotorSim.getAngularVelocityRadPerSec());
 
+        // m_simDriveEncoderDistance += m_driveMotorSim.getAngularVelocityRadPerSec() * dt;
+        // m_driveEncoderSim.setDistance(m_simDriveEncoderDistance);
         m_driveEncoderSim.setRate(m_driveMotorSim.getAngularVelocityRadPerSec());
+
+        System.out.println("Module: " + m_steerMotor.getDeviceID() + " " + m_steerMotorSim.getAngularVelocityRadPerSec() + " " + getState());
     }
 
     /**
