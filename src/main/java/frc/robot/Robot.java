@@ -77,6 +77,7 @@ public class Robot extends LoggedRobot {
         // and running subsystem periodic() methods.  This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+        System.out.println(CommandScheduler.getInstance().isScheduled(drive.getDefaultCommand()));
     }
 
     /**
@@ -125,9 +126,6 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        if (driverJoystick.getTrigger()) {
-            drive.getDefaultCommand().execute();
-        }
     }
 
     @Override

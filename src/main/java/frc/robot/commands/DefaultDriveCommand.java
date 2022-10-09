@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -18,14 +20,22 @@ public class DefaultDriveCommand extends CommandBase {
         this.m_drive = drive;
 
         addRequirements(drive);
+
+        System.out.println("Tesdasdast");
     }
 
     @Override
     public void execute() {
+        System.out.println("Test");
         driveWithJoystick(true);
     }
 
     private void driveWithJoystick(boolean fieldRelative) {
+
+        double rawLeftY = Driver.getRawLeftY();
+        double rawLeftX = Driver.getRawLeftX();
+        double rawRightX = Driver.getRawRightX();
+
         // Get the x speed. We are inverting this because Xbox controllers return
         // negative values when we push forward.
         final var xSpeed =
@@ -46,6 +56,13 @@ public class DefaultDriveCommand extends CommandBase {
         final var rot =
             -m_rotLimiter.calculate(MathUtil.applyDeadband(Driver.getRawRightX(), 0.02))
                 * Drivetrain.kMaxAngularSpeed;
+
+        Logger.getInstance().recordOutput("DriveWithJoystick/RawLeftY", rawLeftY);
+        Logger.getInstance().recordOutput("DriveWithJoystick/RawLeftX", rawLeftX);
+        Logger.getInstance().recordOutput("DriveWithJoystick/RawRightX", rawRightX);
+        Logger.getInstance().recordOutput("DriveWithJoystick/xSpeed", xSpeed);
+        Logger.getInstance().recordOutput("DriveWithJoystick/ySpeed", ySpeed);
+        Logger.getInstance().recordOutput("DriveWithJoystick/rot", rot);
     
         m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
       }

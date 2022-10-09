@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
@@ -48,12 +49,25 @@ public class DrivetrainIOSim implements DrivetrainIO {
     private double m_angle = 0;
 
     public DrivetrainIOSim() {
+        System.out.println("Initialized DrivetrainIOSim");
     }
 
     @Override
     public void updateInputs(DrivetrainIOInputs inputs) {
         inputs.frontLeft_driveVelocity = m_frontLeft.getDriveVelocity();
         inputs.frontLeft_steerAngle = m_frontLeft.getSteerAngle();
+    }
+
+    @Override
+    public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+        SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(
+            fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_navX.getRotation2d()) : new ChassisSpeeds(xSpeed, ySpeed, rot)
+        );
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, xSpeed);
+        m_frontLeft.setDesiredState(states[0]);
+        m_frontRight.setDesiredState(states[1]);
+        m_backLeft.setDesiredState(states[2]);
+        m_backRight.setDesiredState(states[3]);
     }
 
     @Override
