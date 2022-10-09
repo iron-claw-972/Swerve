@@ -1,4 +1,4 @@
-package frc.robot.logging;
+package frc.robot.subsystems.drivetrain;
 
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -34,5 +34,8 @@ public interface DrivetrainIO {
     }
 
     public void updateInputs(DrivetrainIOInputs inputs);
+    public default void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {}
+    public default void updateOdometry() {}
 
+    public default void simulatePeriodic() {}
 }
