@@ -52,7 +52,7 @@ public class DefaultDriveCommand extends CommandBase {
         // the right by default.
         final var rot =
             -m_rotLimiter.calculate(MathUtil.applyDeadband(Driver.getRawRightX(), 0.02))
-                * Drivetrain.kMaxAngularSpeed;
+                * Constants.drive.kMaxAngularSpeed;
 
         Logger.getInstance().recordOutput("DefaultDriveCommand/RawLeftY", rawLeftY);
         Logger.getInstance().recordOutput("DefaultDriveCommand/RawLeftX", rawLeftX);

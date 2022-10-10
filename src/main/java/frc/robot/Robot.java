@@ -21,8 +21,8 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.controls.Driver;
 import frc.robot.controls.Operator;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.drivetrain.DrivetrainIOReal;
-import frc.robot.subsystems.drivetrain.DrivetrainIOSim;
+import frc.robot.subsystems.unused.DrivetrainIOReal;
+import frc.robot.subsystems.unused.DrivetrainIOSim;
 import frc.robot.util.ShuffleboardManager;
 
 /**
@@ -45,11 +45,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
 
-        if (isReal()) {
-            drive = new Drivetrain(new DrivetrainIOReal());
-        } else {
-            drive = new Drivetrain(new DrivetrainIOSim());
-        }
+        drive = new Drivetrain();
 
         setUseTiming(isReal()); // Run as fast as possible during replay
         LoggedNetworkTables.getInstance().addTable("/972"); // Log & replay "SmartDashboard" values (no tables are logged by default).
@@ -77,7 +73,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationPeriodic() {
         SmartDashboard.putData("Field", m_field);
-        m_field.setRobotPose(drive.getDrivetrainIO().getOdometry());
+        m_field.setRobotPose(drive.getRobotPosition());
     }
 
     /**

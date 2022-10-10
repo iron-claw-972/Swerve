@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drivetrain;
+package frc.robot.subsystems.unused;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.unused.DrivetrainIO.DrivetrainIOInputs;
 
 public class DrivetrainIOSim implements DrivetrainIO {
 
