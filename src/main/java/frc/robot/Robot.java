@@ -21,8 +21,6 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.controls.Driver;
 import frc.robot.controls.Operator;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.unused.DrivetrainIOReal;
-import frc.robot.subsystems.unused.DrivetrainIOSim;
 import frc.robot.util.ShuffleboardManager;
 
 /**

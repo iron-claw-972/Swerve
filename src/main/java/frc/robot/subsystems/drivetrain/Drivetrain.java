@@ -16,49 +16,6 @@ import frc.robot.subsystems.drivetrain.ModuleIO.ModuleIOInputs;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
-    // public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
-
-    // private final DrivetrainIO m_drivetrainIO;
-
-    // private final DrivetrainIOInputs m_inputs = new DrivetrainIOInputs();
-
-    // public Drivetrain(DrivetrainIO io) {
-    //     // m_navX.reset();
-    //     m_drivetrainIO = io;
-    // }
-
-    // @Override
-    // public void periodic() {
-    //     m_drivetrainIO.updateInputs(m_inputs);
-    //     Logger.getInstance().processInputs("Drivetrain", m_inputs);
-    //     updateOdometry();
-    // }
-
-    // @Override
-    // public void simulationPeriodic() {
-    //     m_drivetrainIO.simulationPeriodic();
-    // }
-
-    // /**
-    //  * Method to drive the robot using joystick info.
-    //  *
-    //  * @param xSpeed Speed of the robot in the x direction (forward).
-    //  * @param ySpeed Speed of the robot in the y direction (sideways).
-    //  * @param rot Angular rate of the robot.
-    //  * @param fieldRelative Whether the provided x and y speeds are relative to the field.
-    //  */
-    // public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    //     m_drivetrainIO.drive(xSpeed, ySpeed, rot, fieldRelative);
-    // }
-
-    // /** Updates the field relative position of the robot. */
-    // public void updateOdometry() {
-    //     m_drivetrainIO.updateOdometry();
-    // }
-
-    // public DrivetrainIO getDrivetrainIO() {
-    //     return m_drivetrainIO;
-    // }
 
     private final GyroIO m_gyroIO = new GyroIONavX();
     private final GyroIOInputs m_gyroInputs = new GyroIOInputs();
@@ -70,11 +27,6 @@ public class Drivetrain extends SubsystemBase {
         new ModuleIOInputs(),
         new ModuleIOInputs()
     };
-
-    // private final Translation2d m_frontLeftLocation = new Translation2d(Constants.drive.KTrackWidth / 2, Constants.drive.KTrackWidth / 2);
-    // private final Translation2d m_frontRightLocation = new Translation2d(Constants.drive.KTrackWidth / 2, -Constants.drive.KTrackWidth / 2);
-    // private final Translation2d m_backLeftLocation = new Translation2d(-Constants.drive.KTrackWidth / 2, Constants.drive.KTrackWidth / 2);
-    // private final Translation2d m_backRightLocation = new Translation2d(-Constants.drive.KTrackWidth / 2, -Constants.drive.KTrackWidth / 2);
 
     private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
     private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
@@ -182,45 +134,5 @@ public class Drivetrain extends SubsystemBase {
 
     public Pose2d getRobotPosition() {
         return m_robotPosition;
-    }
-
-    // private final DrivetrainIOInputs m_inputs = new DrivetrainIOInputs();
-
-    // public Drivetrain(DrivetrainIO io) {
-    //     // m_navX.reset();
-    //     m_drivetrainIO = io;
-    // }
-
-    // @Override
-    // public void periodic() {
-    //     m_drivetrainIO.updateInputs(m_inputs);
-    //     Logger.getInstance().processInputs("Drivetrain", m_inputs);
-    //     updateOdometry();
-    // }
-
-    // @Override
-    // public void simulationPeriodic() {
-    //     m_drivetrainIO.simulationPeriodic();
-    // }
-
-    // /**
-    //  * Method to drive the robot using joystick info.
-    //  *
-    //  * @param xSpeed Speed of the robot in the x direction (forward).
-    //  * @param ySpeed Speed of the robot in the y direction (sideways).
-    //  * @param rot Angular rate of the robot.
-    //  * @param fieldRelative Whether the provided x and y speeds are relative to the field.
-    //  */
-    // public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    //     m_drivetrainIO.drive(xSpeed, ySpeed, rot, fieldRelative);
-    // }
-
-    // /** Updates the field relative position of the robot. */
-    // public void updateOdometry() {
-    //     m_drivetrainIO.updateOdometry();
-    // }
-
-    // public DrivetrainIO getDrivetrainIO() {
-    //     return m_drivetrainIO;
-    // }
+    } 
 }
