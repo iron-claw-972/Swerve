@@ -128,7 +128,6 @@ public class ModuleIOSim implements ModuleIO {
      */
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
-        // SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(m_steerMotor.get()));
         SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(m_currentTurnPositionRad));
 
         // Calculate the drive output from the drive PID controller.
@@ -136,41 +135,14 @@ public class ModuleIOSim implements ModuleIO {
             m_drivePIDController.calculate(m_driveEncoder.getRate(), state.speedMetersPerSecond);
 
         final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
-
-        // Calculate the turning motor output from the turning PID controller.
-        // final double turnOutput =
-        //     m_turningPIDController.calculate(m_steerMotor.get(), state.angle.getRadians());
         
         final double turnOutput = m_turningPIDController.calculate(m_currentTurnPositionRad, state.angle.getRadians());
 
         final double turnFeedforward =
             m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-        // m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-        // m_steerMotor.setVoltage(turnOutput + turnFeedforward);
-
-        m_driveMotorSim.setInputVoltage(driveOutput + driveFeedforward);
+        m_driveMotorSim.setInputVoltage(driveOutput * 5 + driveFeedforward);
         m_steerMotorSim.setInputVoltage(turnOutput + turnFeedforward);
-    }
-
-    /**
-     * Returns the current angle of the steer motor.
-     *
-     * @return The current angle of the steer motor.
-     */
-    public double getSteerAngle() {
-        return Units.radiansToDegrees(m_currentTurnPositionRad);
-        // return new Rotation2d(m_steerMotor.get()).getDegrees();
-    }
-
-    /**
-     * Returns the current velocity of the drive motor.
-     *
-     * @return The current velocity of the drive motor.
-     */
-    public double getDriveVelocity() {
-        return m_driveMotorSim.getAngularVelocityRPM() * Constants.swerve.kWheelRadius * 2 * Math.PI / 60;
-        // return m_driveMotor.getSelectedSensorVelocity();
     }
     
 }

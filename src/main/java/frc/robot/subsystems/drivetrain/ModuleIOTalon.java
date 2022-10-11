@@ -107,23 +107,5 @@ public class ModuleIOTalon implements ModuleIO {
         m_driveMotor.setVoltage(driveOutput + driveFeedforward);
         m_steerMotor.setVoltage(turnOutput + turnFeedforward);
     }
-
-    /**
-     * Returns the current angle of the steer motor.
-     *
-     * @return The current angle of the steer motor.
-     */
-    public double getSteerAngle() {
-        return new Rotation2d(m_steerMotor.get()).getDegrees();
-    }
-
-    /**
-     * Returns the current velocity of the drive motor.
-     *
-     * @return The current velocity of the drive motor.
-     */
-    public double getDriveVelocity() {
-        return m_driveMotor.getSelectedSensorVelocity();
-    }
     
 }
