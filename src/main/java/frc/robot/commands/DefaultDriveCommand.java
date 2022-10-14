@@ -54,6 +54,8 @@ public class DefaultDriveCommand extends CommandBase {
             -m_rotLimiter.calculate(MathUtil.applyDeadband(Driver.getRawRightX(), 0.02))
                 * Constants.drive.kMaxAngularSpeed;
 
+        System.out.println(rot);
+
         Logger.getInstance().recordOutput("DefaultDriveCommand/rawLeftY", rawLeftY);
         Logger.getInstance().recordOutput("DefaultDriveCommand/rawLeftX", rawLeftX);
         Logger.getInstance().recordOutput("DefaultDriveCommand/rawRightX", rawRightX);
