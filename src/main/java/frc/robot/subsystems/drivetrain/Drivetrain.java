@@ -47,26 +47,49 @@ public class Drivetrain extends SubsystemBase {
 
         m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyroIO.getRotation2d(), m_robotPosition);
 
-        moduleIOs[0] = new ModuleIOTalon(
-            Constants.drive.kDriveFrontLeft,
-            Constants.drive.kSteerFrontLeft,
-            Constants.drive.kEncoderFrontLeft
-        );
-        moduleIOs[1] = new ModuleIOTalon(
-            Constants.drive.kDriveFrontRight,
-            Constants.drive.kSteerFrontRight,
-            Constants.drive.kEncoderFrontRight
-        );
-        moduleIOs[2] = new ModuleIOTalon(
-            Constants.drive.kDriveBackLeft,
-            Constants.drive.kSteerBackLeft,
-            Constants.drive.kEncoderBackLeft
-        );
-        moduleIOs[3] = new ModuleIOTalon(
-            Constants.drive.kDriveBackRight,
-            Constants.drive.kSteerBackRight,
-            Constants.drive.kEncoderBackRight
-        );
+        if (RobotBase.isReal()) {
+            moduleIOs[0] = new ModuleIOTalon(
+                Constants.drive.kDriveFrontLeft,
+                Constants.drive.kSteerFrontLeft,
+                Constants.drive.kEncoderFrontLeft
+            );
+            moduleIOs[1] = new ModuleIOTalon(
+                Constants.drive.kDriveFrontRight,
+                Constants.drive.kSteerFrontRight,
+                Constants.drive.kEncoderFrontRight
+            );
+            moduleIOs[2] = new ModuleIOTalon(
+                Constants.drive.kDriveBackLeft,
+                Constants.drive.kSteerBackLeft,
+                Constants.drive.kEncoderBackLeft
+            );
+            moduleIOs[3] = new ModuleIOTalon(
+                Constants.drive.kDriveBackRight,
+                Constants.drive.kSteerBackRight,
+                Constants.drive.kEncoderBackRight
+            );
+        } else {
+            moduleIOs[0] = new ModuleIOSim(
+                Constants.drive.kDriveFrontLeft,
+                Constants.drive.kSteerFrontLeft,
+                Constants.drive.kEncoderFrontLeft
+            );
+            moduleIOs[1] = new ModuleIOSim(
+                Constants.drive.kDriveFrontRight,
+                Constants.drive.kSteerFrontRight,
+                Constants.drive.kEncoderFrontRight
+            );
+            moduleIOs[2] = new ModuleIOSim(
+                Constants.drive.kDriveBackLeft,
+                Constants.drive.kSteerBackLeft,
+                Constants.drive.kEncoderBackLeft
+            );
+            moduleIOs[3] = new ModuleIOSim(
+                Constants.drive.kDriveBackRight,
+                Constants.drive.kSteerBackRight,
+                Constants.drive.kEncoderBackRight
+            );
+        }
     }
 
     @Override

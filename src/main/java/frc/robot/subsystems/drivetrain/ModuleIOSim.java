@@ -1,6 +1,8 @@
 package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderSimCollection;
 
 import ctre_shims.TalonEncoder;
 import ctre_shims.TalonEncoderSim;
@@ -30,10 +32,10 @@ public class ModuleIOSim implements ModuleIO {
     // private final TalonFXSimCollection m_steerMotorSim;
 
     private final TalonEncoder m_driveEncoder;
-    private final DutyCycleEncoder m_absEncoder;
+    private final CANCoder m_encoder;
 
     private final TalonEncoderSim m_driveEncoderSim;
-    private final DutyCycleEncoderSim m_absEncoderSim;
+    private final CANCoderSimCollection m_encoderSim;
 
     // Gains are for example purposes only - must be determined for your own robot!
     private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
@@ -56,7 +58,7 @@ public class ModuleIOSim implements ModuleIO {
     public ModuleIOSim(
         int driveMotorPort,
         int steerMotorPort,
-        int absEncoderPort) {
+        int encoderPort) {
         m_driveMotor = new WPI_TalonFX(driveMotorPort);
         m_steerMotor = new WPI_TalonFX(steerMotorPort);
 
@@ -64,20 +66,15 @@ public class ModuleIOSim implements ModuleIO {
         // m_steerMotorSim = m_steerMotor.getSimCollection();
 
         m_driveEncoder = new TalonEncoder(m_driveMotor);
-        m_absEncoder = new DutyCycleEncoder(absEncoderPort);
+        m_encoder = new CANCoder(encoderPort);
 
         m_driveEncoderSim = new TalonEncoderSim(m_driveEncoder);
-        m_absEncoderSim = new DutyCycleEncoderSim(m_absEncoder);
+        m_encoderSim = new CANCoderSimCollection(m_encoder);
 
         // Set the distance per pulse for the drive encoder. We can simply use the
         // distance traveled for one rotation of the wheel divided by the encoder
         // resolution.
         m_driveEncoder.setDistancePerPulse(2 * Math.PI * Constants.swerve.kWheelRadius / 6.75 / Constants.kEncoderResolution);
-
-        // Set the distance (in this case, angle) per pulse for the turning encoder.
-        // This is the the angle through an entire rotation (2 * pi) divided by the
-        // encoder resolution.
-        m_absEncoder.setDistancePerRotation(2 * Math.PI);
 
         // Limit the PID Controller's input range between -pi and pi and set the input
         // to be continuous.
@@ -128,15 +125,15 @@ public class ModuleIOSim implements ModuleIO {
      */
     public void setDesiredState(SwerveModuleState desiredState) {
         // Optimize the reference state to avoid spinning further than 90 degrees
-        SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(m_currentTurnPositionRad));
+        desiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(m_currentTurnPositionRad));
 
         // Calculate the drive output from the drive PID controller.
         final double driveOutput =
-            m_drivePIDController.calculate(m_driveEncoder.getRate(), state.speedMetersPerSecond);
+            m_drivePIDController.calculate(m_driveEncoder.getRate(), desiredState.speedMetersPerSecond);
 
-        final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
+        final double driveFeedforward = m_driveFeedforward.calculate(desiredState.speedMetersPerSecond);
         
-        final double turnOutput = m_turningPIDController.calculate(m_currentTurnPositionRad, state.angle.getRadians());
+        final double turnOutput = m_turningPIDController.calculate(m_currentTurnPositionRad, desiredState.angle.getRadians());
 
         final double turnFeedforward =
             m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
