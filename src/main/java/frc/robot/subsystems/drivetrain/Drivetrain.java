@@ -17,7 +17,7 @@ import frc.robot.subsystems.drivetrain.ModuleIO.ModuleIOInputs;
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
 
-    private final GyroIO m_gyroIO = new GyroIONavX();
+    private final GyroIO m_gyroIO = new GyroIOPigeon();
     private final GyroIOInputs m_gyroInputs = new GyroIOInputs();
 
     private final ModuleIO[] moduleIOs = new ModuleIO[4];
@@ -41,9 +41,12 @@ public class Drivetrain extends SubsystemBase {
     );
 
     private Pose2d m_robotPosition = new Pose2d(0, 0, new Rotation2d());
-    private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyroIO.getNavX().getRotation2d(), m_robotPosition);
+    private final SwerveDriveOdometry m_odometry;
 
     public Drivetrain() {
+
+        m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyroIO.getRotation2d(), m_robotPosition);
+
         moduleIOs[0] = new ModuleIOTalon(
             Constants.drive.kDriveFrontLeft,
             Constants.drive.kSteerFrontLeft,
