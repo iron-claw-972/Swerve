@@ -14,30 +14,30 @@ import frc.robot.constants.Constants;
 public class Drivetrain extends SubsystemBase {
 
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
-  private final Translation2d m_frontLeftLocation = new Translation2d(Constants.drive.KTrackWidth / 2, Constants.drive.KTrackWidth / 2);
-  private final Translation2d m_frontRightLocation = new Translation2d(Constants.drive.KTrackWidth / 2, -Constants.drive.KTrackWidth / 2);
-  private final Translation2d m_backLeftLocation = new Translation2d(-Constants.drive.KTrackWidth / 2, Constants.drive.KTrackWidth / 2);
-  private final Translation2d m_backRightLocation = new Translation2d(-Constants.drive.KTrackWidth / 2, -Constants.drive.KTrackWidth / 2);
+  private final Translation2d m_frontLeftLocation = new Translation2d(Constants.drive.kTrackWidth / 2, Constants.drive.kTrackWidth / 2);
+  private final Translation2d m_frontRightLocation = new Translation2d(Constants.drive.kTrackWidth / 2, -Constants.drive.kTrackWidth / 2);
+  private final Translation2d m_backLeftLocation = new Translation2d(-Constants.drive.kTrackWidth / 2, Constants.drive.kTrackWidth / 2);
+  private final Translation2d m_backRightLocation = new Translation2d(-Constants.drive.kTrackWidth / 2, -Constants.drive.kTrackWidth / 2);
 
   private final SwerveModule m_frontLeft = new SwerveModule(
-          Constants.drive.FRONT_LEFT_MODULE_DRIVE_MOTOR,
-          Constants.drive.FRONT_LEFT_MODULE_STEER_MOTOR,
-          Constants.drive.FRONT_LEFT_MODULE_STEER_ENCODER
+          Constants.drive.kDriveFrontLeft,
+          Constants.drive.kSteerFrontLeft,
+          Constants.drive.kEncoderFrontLeft
   );
   private final SwerveModule m_frontRight = new SwerveModule(
-        Constants.drive.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-        Constants.drive.FRONT_RIGHT_MODULE_STEER_MOTOR,
-        Constants.drive.FRONT_RIGHT_MODULE_STEER_ENCODER
+        Constants.drive.kDriveFrontRight,
+        Constants.drive.kSteerFrontRight,
+        Constants.drive.kEncoderFrontRight
   );
   private final SwerveModule m_backLeft = new SwerveModule(
-        Constants.drive.BACK_LEFT_MODULE_DRIVE_MOTOR,
-        Constants.drive.BACK_LEFT_MODULE_STEER_MOTOR,
-        Constants.drive.BACK_LEFT_MODULE_STEER_ENCODER
+        Constants.drive.kDriveBackLeft,
+        Constants.drive.kSteerBackLeft,
+        Constants.drive.kEncoderBackLeft
   );
   private final SwerveModule m_backRight = new SwerveModule(
-    Constants.drive.BACK_RIGHT_MODULE_DRIVE_MOTOR,
-    Constants.drive.BACK_RIGHT_MODULE_STEER_MOTOR,
-    Constants.drive.BACK_RIGHT_MODULE_STEER_ENCODER
+    Constants.drive.kDriveBackRight,
+    Constants.drive.kSteerBackRight,
+    Constants.drive.kEncoderBackRight
   );
 
   private final Pigeon2 pigeon = new Pigeon2(Constants.drive.kPigeon, Constants.kRioCAN);
