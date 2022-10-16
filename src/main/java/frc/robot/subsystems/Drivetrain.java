@@ -20,24 +20,28 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_backRightLocation = new Translation2d(-Constants.drive.kTrackWidth / 2, -Constants.drive.kTrackWidth / 2);
 
   private final SwerveModule m_frontLeft = new SwerveModule(
-          Constants.drive.kDriveFrontLeft,
-          Constants.drive.kSteerFrontLeft,
-          Constants.drive.kEncoderFrontLeft
+    Constants.drive.kDriveFrontLeft,
+    Constants.drive.kSteerFrontLeft,
+    Constants.drive.kEncoderFrontLeft,
+    Constants.drive.kSteerOffsetFrontLeft
   );
   private final SwerveModule m_frontRight = new SwerveModule(
-        Constants.drive.kDriveFrontRight,
-        Constants.drive.kSteerFrontRight,
-        Constants.drive.kEncoderFrontRight
+    Constants.drive.kDriveFrontRight,
+    Constants.drive.kSteerFrontRight,
+    Constants.drive.kEncoderFrontRight,
+    Constants.drive.kSteerOffsetFrontRight
   );
   private final SwerveModule m_backLeft = new SwerveModule(
-        Constants.drive.kDriveBackLeft,
-        Constants.drive.kSteerBackLeft,
-        Constants.drive.kEncoderBackLeft
+    Constants.drive.kDriveBackLeft,
+    Constants.drive.kSteerBackLeft,
+    Constants.drive.kEncoderBackLeft,
+    Constants.drive.kSteerOffsetBackLeft
   );
   private final SwerveModule m_backRight = new SwerveModule(
     Constants.drive.kDriveBackRight,
     Constants.drive.kSteerBackRight,
-    Constants.drive.kEncoderBackRight
+    Constants.drive.kEncoderBackRight,
+    Constants.drive.kSteerOffsetBackRight
   );
 
   private final Pigeon2 pigeon = new Pigeon2(Constants.drive.kPigeon, Constants.kRioCAN);
@@ -49,7 +53,7 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveDriveOdometry m_odometry;
 
   public Drivetrain() {
-    m_odometry = new SwerveDriveOdometry(m_kinematics, new Rotation2d(pigeon.getYaw()));
+    m_odometry = new SwerveDriveOdometry(m_kinematics, getRotation2d());
   }
 
   /**

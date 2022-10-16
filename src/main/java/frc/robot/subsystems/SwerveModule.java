@@ -39,7 +39,8 @@ public class SwerveModule {
   public SwerveModule(
       int driveMotorPort,
       int steerMotorPort,
-      int encoderPort) {
+      int encoderPort,
+      double encoderOffset) {
     m_driveMotor = new WPI_TalonFX(driveMotorPort, Constants.kCanivoreCAN);
     m_steerMotor = new WPI_TalonFX(steerMotorPort, Constants.kCanivoreCAN);
 
@@ -50,6 +51,8 @@ public class SwerveModule {
     // by default the CANcoder sets it's feedback coefficient to 0.087890625, to make degrees. 
     m_encoder.configFactoryDefault();
     m_encoder.setPositionToAbsolute();
+
+    m_encoder.configMagnetOffset(encoderOffset);
 
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
