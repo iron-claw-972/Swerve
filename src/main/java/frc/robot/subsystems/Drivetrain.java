@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -44,7 +44,7 @@ public class Drivetrain extends SubsystemBase {
     Constants.drive.kSteerOffsetBackRight
   );
 
-  private final Pigeon2 pigeon = new Pigeon2(Constants.drive.kPigeon, Constants.kRioCAN);
+  private final WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kRioCAN);
 
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
@@ -53,7 +53,7 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveDriveOdometry m_odometry;
 
   public Drivetrain() {
-    m_odometry = new SwerveDriveOdometry(m_kinematics, getRotation2d());
+    m_odometry = new SwerveDriveOdometry(m_kinematics, m_pigeon.getRotation2d());
   }
 
   /**
@@ -68,7 +68,7 @@ public class Drivetrain extends SubsystemBase {
     var swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d())
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_pigeon.getRotation2d())
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.drive.kMaxSpeed);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
@@ -80,14 +80,10 @@ public class Drivetrain extends SubsystemBase {
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
     m_odometry.update(
-        getRotation2d(),
+        m_pigeon.getRotation2d(),
         m_frontLeft.getState(),
         m_frontRight.getState(),
         m_backLeft.getState(),
         m_backRight.getState());
-  }
-
-  public Rotation2d getRotation2d() {
-      return new Rotation2d(pigeon.getYaw());
   }
 }
