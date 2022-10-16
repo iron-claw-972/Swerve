@@ -3,6 +3,8 @@ package frc.robot.subsystems.drivetrain;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 import com.kauailabs.navx.frc.AHRS;
 
 public interface GyroIO {
@@ -29,6 +31,6 @@ public interface GyroIO {
     
     public void updateInputs(GyroIOInputs inputs);
 
-    public default AHRS getNavX() { return null; }
+    public default Rotation2d getRotation2d() { return null; }
 
 }

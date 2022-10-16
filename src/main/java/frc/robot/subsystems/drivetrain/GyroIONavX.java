@@ -2,6 +2,7 @@ package frc.robot.subsystems.drivetrain;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 
 public class GyroIONavX implements GyroIO {
@@ -19,8 +20,8 @@ public class GyroIONavX implements GyroIO {
         inputs.velocity = m_navX.getRate();
     }
 
-    public AHRS getNavX() {
-        return m_navX;
+    public Rotation2d getRotation2d() {
+        return m_navX.getRotation2d();
     }
     
 }

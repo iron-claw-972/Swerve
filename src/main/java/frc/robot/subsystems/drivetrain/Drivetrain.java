@@ -44,49 +44,26 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyroIO.getNavX().getRotation2d(), m_robotPosition);
 
     public Drivetrain() {
-        if (RobotBase.isReal()) {
-            moduleIOs[0] = new ModuleIOTalon(
-                Constants.drive.FRONT_LEFT_MODULE_DRIVE_MOTOR,
-                Constants.drive.FRONT_LEFT_MODULE_STEER_MOTOR,
-                Constants.drive.FRONT_LEFT_MODULE_STEER_ENCODER
-            );
-            moduleIOs[1] = new ModuleIOTalon(
-                Constants.drive.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-                Constants.drive.FRONT_RIGHT_MODULE_STEER_MOTOR,
-                Constants.drive.FRONT_RIGHT_MODULE_STEER_ENCODER
-            );
-            moduleIOs[2] = new ModuleIOTalon(
-                Constants.drive.BACK_LEFT_MODULE_DRIVE_MOTOR,
-                Constants.drive.BACK_LEFT_MODULE_STEER_MOTOR,
-                Constants.drive.BACK_LEFT_MODULE_STEER_ENCODER
-            );
-            moduleIOs[3] = new ModuleIOTalon(
-                Constants.drive.BACK_RIGHT_MODULE_DRIVE_MOTOR,
-                Constants.drive.BACK_RIGHT_MODULE_STEER_MOTOR,
-                Constants.drive.BACK_RIGHT_MODULE_STEER_ENCODER
-            );
-        } else {
-            moduleIOs[0] = new ModuleIOSim(
-                Constants.drive.FRONT_LEFT_MODULE_DRIVE_MOTOR,
-                Constants.drive.FRONT_LEFT_MODULE_STEER_MOTOR,
-                Constants.drive.FRONT_LEFT_MODULE_STEER_ENCODER
-            );
-            moduleIOs[1] = new ModuleIOSim(
-                Constants.drive.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-                Constants.drive.FRONT_RIGHT_MODULE_STEER_MOTOR,
-                Constants.drive.FRONT_RIGHT_MODULE_STEER_ENCODER
-            );
-            moduleIOs[2] = new ModuleIOSim(
-                Constants.drive.BACK_LEFT_MODULE_DRIVE_MOTOR,
-                Constants.drive.BACK_LEFT_MODULE_STEER_MOTOR,
-                Constants.drive.BACK_LEFT_MODULE_STEER_ENCODER
-            );
-            moduleIOs[3] = new ModuleIOSim(
-                Constants.drive.BACK_RIGHT_MODULE_DRIVE_MOTOR,
-                Constants.drive.BACK_RIGHT_MODULE_STEER_MOTOR,
-                Constants.drive.BACK_RIGHT_MODULE_STEER_ENCODER
-            );
-        }
+        moduleIOs[0] = new ModuleIOTalon(
+            Constants.drive.kDriveFrontLeft,
+            Constants.drive.kSteerFrontLeft,
+            Constants.drive.kEncoderFrontLeft
+        );
+        moduleIOs[1] = new ModuleIOTalon(
+            Constants.drive.kDriveFrontRight,
+            Constants.drive.kSteerFrontRight,
+            Constants.drive.kEncoderFrontRight
+        );
+        moduleIOs[2] = new ModuleIOTalon(
+            Constants.drive.kDriveBackLeft,
+            Constants.drive.kSteerBackLeft,
+            Constants.drive.kEncoderBackLeft
+        );
+        moduleIOs[3] = new ModuleIOTalon(
+            Constants.drive.kDriveBackRight,
+            Constants.drive.kSteerBackRight,
+            Constants.drive.kEncoderBackRight
+        );
     }
 
     @Override
@@ -112,7 +89,7 @@ public class Drivetrain extends SubsystemBase {
 
     public void updateOdometry() {
         m_robotPosition = m_odometry.update(
-            Rotation2d.fromDegrees(-m_gyroIO.getNavX().getAngle()),
+            m_gyroIO.getRotation2d(), //may need to be negative or something else
             moduleIOs[0].getState(),
             moduleIOs[1].getState(),
             moduleIOs[2].getState(),
@@ -127,7 +104,7 @@ public class Drivetrain extends SubsystemBase {
         var swerveModuleStates =
             m_kinematics.toSwerveModuleStates(
                 fieldRelative
-                    ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyroIO.getNavX().getRotation2d())
+                    ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyroIO.getRotation2d())
                     : new ChassisSpeeds(xSpeed, ySpeed, rot));
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.drive.kMaxSpeed);
         for (int i = 0; i < moduleIOs.length; i++) {
