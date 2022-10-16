@@ -6,6 +6,8 @@ public class DriveConstants {
     public final double KTrackWidth = Units.inchesToMeters(22.75);
     public final double kMaxSpeed = 6380.0 / 60.0 / 6.75 * Units.inchesToMeters(4) * Math.PI;
 
+    public final int kPigeon = -1;
+
     public final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 31;
     public final int FRONT_LEFT_MODULE_STEER_MOTOR = 14;
     public final int FRONT_LEFT_MODULE_STEER_ENCODER = 0;
