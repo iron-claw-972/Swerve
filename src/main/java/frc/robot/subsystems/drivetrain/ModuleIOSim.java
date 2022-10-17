@@ -20,7 +20,7 @@ public class ModuleIOSim implements ModuleIO {
 
     // TODO: need these values!
     private FlywheelSim m_driveMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), Constants.drive.kGearRatio, 0.025);
-    private FlywheelSim m_steerMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), 150.0 / 7.0, 0.004096955);
+    private FlywheelSim m_steerMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), Constants.drive.kGearRatioSteer, 0.004096955);
 
     private final WPI_TalonFX m_driveMotor;
     private final WPI_TalonFX m_steerMotor;
