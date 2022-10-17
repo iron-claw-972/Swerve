@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import ctre_shims.TalonEncoder;
 
@@ -18,23 +18,21 @@ public class SwerveModule {
   private final WPI_TalonFX m_steerMotor;
 
   private final TalonEncoder m_driveEncoder;
-  private final CANCoder m_encoder;
+  private final WPI_CANCoder m_encoder;
 
-  // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP, Constants.drive.kDriveI, Constants.drive.kDriveD);
 
-  // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
-      new ProfiledPIDController(
-          1,
-          0,
-          0,
-          new TrapezoidProfile.Constraints(
-            Constants.drive.kMaxAngularSpeed, 2 * Math.PI));
+    new ProfiledPIDController(
+      Constants.drive.kSteerP,
+      Constants.drive.kSteerI,
+      Constants.drive.kSteerD,
+      new TrapezoidProfile.Constraints(
+        Constants.drive.kMaxAngularSpeed, 2 * Math.PI)
+  );
 
-  // Gains are for example purposes only - must be determined for your own robot!
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 0);
-  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
+  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS, Constants.drive.kDriveKV);
+  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS, Constants.drive.kSteerKV);
 
   public SwerveModule(
       int driveMotorPort,
@@ -45,7 +43,7 @@ public class SwerveModule {
     m_steerMotor = new WPI_TalonFX(steerMotorPort, Constants.kCanivoreCAN);
 
     m_driveEncoder = new TalonEncoder(m_driveMotor);
-    m_encoder = new CANCoder(encoderPort, Constants.kCanivoreCAN);
+    m_encoder = new WPI_CANCoder(encoderPort, Constants.kCanivoreCAN);
 
     // reset encoder to factory defaults, reset position to the measurement of the absolute encoder
     // by default the CANcoder sets it's feedback coefficient to 0.087890625, to make degrees. 

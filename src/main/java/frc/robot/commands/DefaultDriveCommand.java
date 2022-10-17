@@ -2,13 +2,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.Constants;
 import frc.robot.controls.Driver;
 import frc.robot.subsystems.Drivetrain;
-
-import java.util.function.DoubleSupplier;
 
 public class DefaultDriveCommand extends CommandBase {
     private final Drivetrain m_drive;
@@ -48,7 +45,7 @@ public class DefaultDriveCommand extends CommandBase {
         // the right by default.
         final var rot =
             -m_rotLimiter.calculate(MathUtil.applyDeadband(Driver.getRawRightX(), 0.02))
-                * Drivetrain.kMaxAngularSpeed;
+                * Constants.drive.kMaxAngularSpeed;
     
         m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);
       }

@@ -32,4 +32,22 @@ public class DriveConstants {
     public final int kSteerBackRight = 11;
     public final int kEncoderBackRight = 12; 
     public final double kSteerOffsetBackRight = 0.0; // FIXME Measure and set back right steer offset
+
+    // PID
+    // Drive
+    public final double kDriveP = 1;
+    public final double kDriveI = 0;
+    public final double kDriveD = 0;
+    // Steer
+    public final double kSteerP = 1;
+    public final double kSteerI = 0;
+    public final double kSteerD = 0;
+
+    // FEEDFORWARD
+    // Drive
+    public final double kDriveKS = 0;
+    public final double kDriveKV = 0;
+    // Steer
+    public final double kSteerKS = 0;
+    public final double kSteerKV = 0;
 }
