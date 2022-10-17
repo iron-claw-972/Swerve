@@ -5,8 +5,6 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-import com.kauailabs.navx.frc.AHRS;
-
 public interface GyroIO {
     
     public static class GyroIOInputs implements LoggableInputs {

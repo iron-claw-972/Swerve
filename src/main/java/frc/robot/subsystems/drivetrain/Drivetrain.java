@@ -28,10 +28,10 @@ public class Drivetrain extends SubsystemBase {
         new ModuleIOInputs()
     };
 
-    private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
-    private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
-    private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
-    private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+    private final Translation2d m_frontLeftLocation = new Translation2d(Constants.drive.kTrackWidth / 2, Constants.drive.kTrackWidth / 2);
+    private final Translation2d m_frontRightLocation = new Translation2d(Constants.drive.kTrackWidth / 2, -Constants.drive.kTrackWidth / 2);
+    private final Translation2d m_backLeftLocation = new Translation2d(-Constants.drive.kTrackWidth / 2, Constants.drive.kTrackWidth / 2);
+    private final Translation2d m_backRightLocation = new Translation2d(-Constants.drive.kTrackWidth / 2, -Constants.drive.kTrackWidth / 2);
 
     private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
         m_frontLeftLocation,
@@ -51,43 +51,51 @@ public class Drivetrain extends SubsystemBase {
             moduleIOs[0] = new ModuleIOTalon(
                 Constants.drive.kDriveFrontLeft,
                 Constants.drive.kSteerFrontLeft,
-                Constants.drive.kEncoderFrontLeft
+                Constants.drive.kEncoderFrontLeft,
+                Constants.drive.kSteerOffsetFrontLeft
             );
             moduleIOs[1] = new ModuleIOTalon(
                 Constants.drive.kDriveFrontRight,
                 Constants.drive.kSteerFrontRight,
-                Constants.drive.kEncoderFrontRight
+                Constants.drive.kEncoderFrontRight,
+                Constants.drive.kSteerOffsetFrontRight
             );
             moduleIOs[2] = new ModuleIOTalon(
                 Constants.drive.kDriveBackLeft,
                 Constants.drive.kSteerBackLeft,
-                Constants.drive.kEncoderBackLeft
+                Constants.drive.kEncoderBackLeft,
+                Constants.drive.kSteerOffsetBackLeft
             );
             moduleIOs[3] = new ModuleIOTalon(
                 Constants.drive.kDriveBackRight,
                 Constants.drive.kSteerBackRight,
-                Constants.drive.kEncoderBackRight
+                Constants.drive.kEncoderBackRight,
+                Constants.drive.kSteerOffsetBackRight
             );
         } else {
             moduleIOs[0] = new ModuleIOSim(
                 Constants.drive.kDriveFrontLeft,
                 Constants.drive.kSteerFrontLeft,
-                Constants.drive.kEncoderFrontLeft
+                Constants.drive.kEncoderFrontLeft,
+                Constants.drive.kSteerOffsetFrontLeft
             );
             moduleIOs[1] = new ModuleIOSim(
                 Constants.drive.kDriveFrontRight,
                 Constants.drive.kSteerFrontRight,
-                Constants.drive.kEncoderFrontRight
+                Constants.drive.kEncoderFrontRight,
+                Constants.drive.kSteerOffsetFrontRight
             );
             moduleIOs[2] = new ModuleIOSim(
                 Constants.drive.kDriveBackLeft,
                 Constants.drive.kSteerBackLeft,
-                Constants.drive.kEncoderBackLeft
+                Constants.drive.kEncoderBackLeft,
+                Constants.drive.kSteerOffsetBackLeft
             );
             moduleIOs[3] = new ModuleIOSim(
                 Constants.drive.kDriveBackRight,
                 Constants.drive.kSteerBackRight,
-                Constants.drive.kEncoderBackRight
+                Constants.drive.kEncoderBackRight,
+                Constants.drive.kSteerOffsetBackRight
             );
         }
     }

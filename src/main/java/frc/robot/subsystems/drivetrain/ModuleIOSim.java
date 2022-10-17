@@ -1,8 +1,8 @@
 package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderSimCollection;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import ctre_shims.TalonEncoder;
 import ctre_shims.TalonEncoderSim;
@@ -13,16 +13,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.constants.Constants;
 
 public class ModuleIOSim implements ModuleIO {
 
     // TODO: need these values!
-    private FlywheelSim m_driveMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), 6.75, 0.025);
+    private FlywheelSim m_driveMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), Constants.drive.kGearRatio, 0.025);
     private FlywheelSim m_steerMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), 150.0 / 7.0, 0.004096955);
 
     private final WPI_TalonFX m_driveMotor;
@@ -32,25 +29,22 @@ public class ModuleIOSim implements ModuleIO {
     // private final TalonFXSimCollection m_steerMotorSim;
 
     private final TalonEncoder m_driveEncoder;
-    private final CANCoder m_encoder;
+    private final WPI_CANCoder m_encoder;
 
     private final TalonEncoderSim m_driveEncoderSim;
     private final CANCoderSimCollection m_encoderSim;
 
-    // Gains are for example purposes only - must be determined for your own robot!
-    private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
+    private final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP, Constants.drive.kDriveI, Constants.drive.kDriveD);
 
-    // Gains are for example purposes only - must be determined for your own robot!
     private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-        1, 
-        0, 
-        0,
-        new TrapezoidProfile.Constraints(Constants.swerve.kMaxAngularSpeed, 2 * Math.PI)
-        );
+        Constants.drive.kSteerP, 
+        Constants.drive.kSteerI, 
+        Constants.drive.kSteerD,
+        new TrapezoidProfile.Constraints(Constants.drive.kMaxAngularSpeed, 2 * Math.PI)
+    );
 
-    // Gains are for example purposes only - must be determined for your own robot!
-    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 0);
-    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
+    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS, Constants.drive.kDriveKV);
+    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS, Constants.drive.kSteerKV);
 
     private double m_currentTurnPositionRad = 0;
     private double m_absoluteTurnPositionRad = 0;
@@ -58,7 +52,8 @@ public class ModuleIOSim implements ModuleIO {
     public ModuleIOSim(
         int driveMotorPort,
         int steerMotorPort,
-        int encoderPort) {
+        int encoderPort,
+        double encoderOffset) {
         m_driveMotor = new WPI_TalonFX(driveMotorPort);
         m_steerMotor = new WPI_TalonFX(steerMotorPort);
 
@@ -66,7 +61,9 @@ public class ModuleIOSim implements ModuleIO {
         // m_steerMotorSim = m_steerMotor.getSimCollection();
 
         m_driveEncoder = new TalonEncoder(m_driveMotor);
-        m_encoder = new CANCoder(encoderPort);
+        m_encoder = new WPI_CANCoder(encoderPort);
+
+        m_encoder.configMagnetOffset(encoderOffset);
 
         m_driveEncoderSim = new TalonEncoderSim(m_driveEncoder);
         m_encoderSim = new CANCoderSimCollection(m_encoder);
@@ -74,7 +71,7 @@ public class ModuleIOSim implements ModuleIO {
         // Set the distance per pulse for the drive encoder. We can simply use the
         // distance traveled for one rotation of the wheel divided by the encoder
         // resolution.
-        m_driveEncoder.setDistancePerPulse(2 * Math.PI * Constants.swerve.kWheelRadius / 6.75 / Constants.kEncoderResolution);
+        m_driveEncoder.setDistancePerPulse(2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kGearRatio / Constants.kEncoderResolution);
 
         // Limit the PID Controller's input range between -pi and pi and set the input
         // to be continuous.
@@ -114,7 +111,7 @@ public class ModuleIOSim implements ModuleIO {
      * @return The current state of the module.
      */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(m_driveMotorSim.getAngularVelocityRPM() * Constants.swerve.kWheelRadius * 2 * Math.PI / 60, new Rotation2d(m_currentTurnPositionRad));
+        return new SwerveModuleState(m_driveMotorSim.getAngularVelocityRPM() * Constants.drive.kWheelRadius * 2 * Math.PI / 60, new Rotation2d(m_currentTurnPositionRad));
         // return new SwerveModuleState(m_driveMotor.getSelectedSensorVelocity(), new Rotation2d(m_steerMotor.get()));
     }
 
