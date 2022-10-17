@@ -3,8 +3,13 @@ package frc.robot.constants;
 import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
+    public final double kMaxAngularSpeed = 2 * Math.PI;
+    public final double kMaxAngularAccel = 2 * Math.PI;
+    public final double kWheelRadius = Units.inchesToMeters(2);
+
     public final double kTrackWidth = Units.inchesToMeters(22.75);
-    public final double kMaxSpeed = 6380.0 / 60.0 / 6.75 * Units.inchesToMeters(4) * Math.PI;
+    public final double kGearRatio = 6.75;
+    public final double kMaxSpeed = 6380.0 / 60.0 / kGearRatio * kWheelRadius * 2 * Math.PI;
 
     public final int kPigeon = -1;
 
