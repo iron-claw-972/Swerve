@@ -97,4 +97,8 @@ public class SwerveModule {
     m_driveMotor.setVoltage(driveOutput + driveFeedforward);
     m_steerMotor.setVoltage(turnOutput + turnFeedforward);
   }
+
+  public double getAngle() {
+    return m_encoder.getAbsolutePosition();
+  }
 }

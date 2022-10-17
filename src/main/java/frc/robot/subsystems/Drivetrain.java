@@ -42,6 +42,10 @@ public class Drivetrain extends SubsystemBase {
     Constants.drive.kSteerOffsetBackRight
   );
 
+  public enum ModuleLocation {
+    FRONT_LEFT, FRONT_RIGHT, BACK_LEFT, BACK_RIGHT
+  }
+
   private final WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kRioCAN);
 
   private final SwerveDriveKinematics m_kinematics =
@@ -83,5 +87,18 @@ public class Drivetrain extends SubsystemBase {
         m_frontRight.getState(),
         m_backLeft.getState(),
         m_backRight.getState());
+  }
+
+  public double getModuleAngle(ModuleLocation module) {
+    if (module == ModuleLocation.FRONT_LEFT) {
+      return m_frontLeft.getAngle();
+    } else if (module == ModuleLocation.FRONT_RIGHT) {
+      return m_frontRight.getAngle();
+    } else if (module == ModuleLocation.BACK_LEFT) {
+      return m_backLeft.getAngle();
+    } else if (module == ModuleLocation.BACK_RIGHT) {
+      return m_backRight.getAngle();
+    }
+    return -1;
   }
 }
