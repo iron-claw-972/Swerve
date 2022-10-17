@@ -58,6 +58,11 @@ public class Drivetrain extends SubsystemBase {
     m_odometry = new SwerveDriveOdometry(m_kinematics, m_pigeon.getRotation2d());
   }
 
+  @Override
+  public void periodic() {
+    updateOdometry();
+  }
+
   /**
    * Method to drive the robot using joystick info.
    *
