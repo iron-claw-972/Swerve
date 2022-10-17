@@ -18,13 +18,13 @@ public class DriveConstants {
     public final int kEncoderFrontRight = 1; 
     public final double kSteerOffsetFrontRight =0.0; // FIXME Measure and set front right steer offset
 
-    public final int kDriveBackLeft = 18; 
-    public final int kSteerBackLeft = 4;
-    public final int kEncoderBackLeft = 2; 
+    public final int kDriveBackLeft = 7; 
+    public final int kSteerBackLeft = 8;
+    public final int kEncoderBackLeft = 9; 
     public final double kSteerOffsetBackLeft = 0.0; // FIXME Measure and set back left steer offset
 
-    public final int kDriveBackRight = 5;
-    public final int kSteerBackRight = 2;
-    public final int kEncoderBackRight = 3; 
+    public final int kDriveBackRight = 10;
+    public final int kSteerBackRight = 11;
+    public final int kEncoderBackRight = 12; 
     public final double kSteerOffsetBackRight = 0.0; // FIXME Measure and set back right steer offset
 }
