@@ -30,5 +30,6 @@ public interface GyroIO {
     public void updateInputs(GyroIOInputs inputs);
 
     public default Rotation2d getRotation2d() { return null; }
+    public default void addHeading(double heading) {}
 
 }
