@@ -7,11 +7,12 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.ModuleIO.ModuleIOInputs;
 
@@ -52,7 +53,7 @@ public class Drivetrain extends SubsystemBase {
 
         m_odometry = new SwerveDriveOdometry(m_kinematics, m_pigeon.getRotation2d(), m_robotPosition);
 
-        if (RobotBase.isReal()) {
+        if (Robot.isReal) {
             moduleIOs[0] = new ModuleIOTalon(
                 Constants.drive.kDriveFrontLeft,
                 Constants.drive.kSteerFrontLeft,
@@ -128,20 +129,34 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void updateOdometry() {
-        m_robotPosition = m_odometry.update(
-            m_pigeon.getRotation2d(), //may need to be negative or something else
-            moduleIOs[0].getState(),
-            moduleIOs[1].getState(),
-            moduleIOs[2].getState(),
-            moduleIOs[3].getState()
-        );
+        if (/*Robot.isReal*/true) {
+            m_robotPosition = m_odometry.update(
+                m_pigeon.getRotation2d(), //may need to be negative or something else
+                moduleIOs[0].getState(),
+                moduleIOs[1].getState(),
+                moduleIOs[2].getState(),
+                moduleIOs[3].getState()
+            );
+        } else {
+
+            //FIXME: figure out how to make this work, from advantage kit
+            ChassisSpeeds chassisState = m_kinematics.toChassisSpeeds(
+                moduleIOs[0].getState(), moduleIOs[1].getState(), moduleIOs[2].getState(), moduleIOs[3].getState()
+            );
+
+            m_robotPosition = m_robotPosition.exp(new Twist2d(
+              chassisState.vxMetersPerSecond,
+              chassisState.vyMetersPerSecond,
+              chassisState.omegaRadiansPerSecond)
+            );
+        }
     }
 
     /**
      * @param fieldRelative Whether the provided x and y speeds are relative to the field.
      */
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-        if (!RobotBase.isReal()) m_pigeon.getSimCollection().addHeading(rot / (2 * Math.PI));
+        if (!Robot.isReal) m_pigeon.getSimCollection().addHeading(rot / (2 * Math.PI));
         var swerveModuleStates =
             m_kinematics.toSwerveModuleStates(
                 fieldRelative
