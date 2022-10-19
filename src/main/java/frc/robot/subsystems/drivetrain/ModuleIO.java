@@ -3,6 +3,9 @@ package frc.robot.subsystems.drivetrain;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public interface ModuleIO {
@@ -51,6 +54,9 @@ public interface ModuleIO {
     public void updateInputs(ModuleIOInputs inputs);
     public default SwerveModuleState getState() { return null; }
     public void setDesiredState(SwerveModuleState swerveModuleState);
-    
+    public default PIDController getDrivePIDController() { return null; };
+    public default ProfiledPIDController getSteerPIDController() { return null; };
+    public default SimpleMotorFeedforward getDriveFF() { return null; };
+    public default SimpleMotorFeedforward getSteerFF() { return null; };
     
 }

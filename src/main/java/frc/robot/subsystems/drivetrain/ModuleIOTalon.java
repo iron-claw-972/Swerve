@@ -22,10 +22,6 @@ public class ModuleIOTalon implements ModuleIO {
 
     public final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP, Constants.drive.kDriveI, Constants.drive.kDriveD);
 
-    public PIDController getDrivePIDController() {
-        return m_drivePIDController;
-    }
-
     public final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
         Constants.drive.kSteerP, 
         Constants.drive.kSteerI, 
@@ -33,12 +29,8 @@ public class ModuleIOTalon implements ModuleIO {
         new TrapezoidProfile.Constraints(Constants.drive.kMaxAngularSpeed, 2 * Math.PI)
     );
 
-    public ProfiledPIDController getTurningPIDController() {
-        return m_turningPIDController;
-    }
-
     public final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS, Constants.drive.kDriveKV);
-    public final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS, Constants.drive.kSteerKV);
+    public final SimpleMotorFeedforward m_steerFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS, Constants.drive.kSteerKV);
 
     public ModuleIOTalon(
         int driveMotorPort,
@@ -110,10 +102,26 @@ public class ModuleIOTalon implements ModuleIO {
             m_turningPIDController.calculate(m_encoder.getAbsolutePosition(), desiredState.angle.getRadians());
 
         final double turnFeedforward =
-            m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+            m_steerFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
         m_driveMotor.setVoltage(driveOutput + driveFeedforward);
         m_steerMotor.setVoltage(turnOutput + turnFeedforward);
+    }
+
+    public PIDController getDrivePIDController() {
+        return m_drivePIDController;
+    }
+
+    public ProfiledPIDController getSteerPIDController() {
+        return m_turningPIDController;
+    }
+
+    public SimpleMotorFeedforward getDriveFF() {
+        return m_driveFeedforward;
+    }
+
+    public SimpleMotorFeedforward getSteerFF() {
+        return m_steerFeedforward;
     }
     
 }

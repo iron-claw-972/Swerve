@@ -31,7 +31,11 @@ public class ShuffleboardManager {
         int i = 0;
         for (ModuleIO module : Robot.drive.moduleIOs) {
             i++;
-            m_driveTab.add("Module 1", module.g(0));
+            m_driveTab.add("Module " + i + " Drive PID", module.getDrivePIDController());
+            m_driveTab.add("Module " + i + " Steer PID", module.getSteerPIDController());
+
+            m_driveTab.add("Module " + i + " Drive FF", module.getDriveFF());
+            m_driveTab.add("Module " + i + " Steer FF", module.getSteerFF());
         }
     }
 
