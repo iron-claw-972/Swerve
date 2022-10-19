@@ -20,17 +20,25 @@ public class ModuleIOTalon implements ModuleIO {
     private final TalonEncoder m_driveEncoder;
     private final WPI_CANCoder m_encoder;
 
-    private final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP, Constants.drive.kDriveI, Constants.drive.kDriveD);
+    public final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP, Constants.drive.kDriveI, Constants.drive.kDriveD);
 
-    private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
+    public PIDController getDrivePIDController() {
+        return m_drivePIDController;
+    }
+
+    public final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
         Constants.drive.kSteerP, 
         Constants.drive.kSteerI, 
         Constants.drive.kSteerD,
         new TrapezoidProfile.Constraints(Constants.drive.kMaxAngularSpeed, 2 * Math.PI)
     );
 
-    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS, Constants.drive.kDriveKV);
-    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS, Constants.drive.kSteerKV);
+    public ProfiledPIDController getTurningPIDController() {
+        return m_turningPIDController;
+    }
+
+    public final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS, Constants.drive.kDriveKV);
+    public final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS, Constants.drive.kSteerKV);
 
     public ModuleIOTalon(
         int driveMotorPort,

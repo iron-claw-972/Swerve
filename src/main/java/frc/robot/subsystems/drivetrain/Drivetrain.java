@@ -20,7 +20,11 @@ public class Drivetrain extends SubsystemBase {
     private final GyroIO m_gyroIO = new GyroIOPigeon();
     private final GyroIOInputs m_gyroInputs = new GyroIOInputs();
 
-    private final ModuleIO[] moduleIOs = new ModuleIO[4];
+    public final ModuleIO[] moduleIOs = new ModuleIO[4];
+    public ModuleIO[] getModuleIOs() {
+        return moduleIOs;
+    }
+
     private final ModuleIOInputs[] moduleInputs = new ModuleIOInputs[] {
         new ModuleIOInputs(),
         new ModuleIOInputs(),
