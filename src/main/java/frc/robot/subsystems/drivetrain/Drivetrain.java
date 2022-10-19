@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,14 +13,12 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.drivetrain.GyroIO.GyroIOInputs;
 import frc.robot.subsystems.drivetrain.ModuleIO.ModuleIOInputs;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
 
-    private final GyroIO m_gyroIO = new GyroIOPigeon();
-    private final GyroIOInputs m_gyroInputs = new GyroIOInputs();
+    private WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kRioCAN);
 
     public final ModuleIO[] moduleIOs = new ModuleIO[4];
     public ModuleIO[] getModuleIOs() {
@@ -50,7 +50,7 @@ public class Drivetrain extends SubsystemBase {
 
     public Drivetrain() {
 
-        m_odometry = new SwerveDriveOdometry(m_kinematics, m_gyroIO.getRotation2d(), m_robotPosition);
+        m_odometry = new SwerveDriveOdometry(m_kinematics, m_pigeon.getRotation2d(), m_robotPosition);
 
         if (RobotBase.isReal()) {
             moduleIOs[0] = new ModuleIOTalon(
@@ -113,8 +113,8 @@ public class Drivetrain extends SubsystemBase {
             Logger.getInstance().processInputs("RealOutputs/Drivetrain/SwerveModule" + (i+1), moduleInputs[i]);
         }
 
-        m_gyroIO.updateInputs(m_gyroInputs);
-        Logger.getInstance().processInputs("RealOutputs/Drivetrain/Gyro", m_gyroInputs);
+        Logger.getInstance().recordOutput("Drivetrain/Gyro/Angle", m_pigeon.getAngle());
+        Logger.getInstance().recordOutput("Drivetrain/Gyro/AngularVelocity", m_pigeon.getRate());
 
         double[] loggedRobotPose = new double[] {
             m_robotPosition.getTranslation().getX(),
@@ -129,7 +129,7 @@ public class Drivetrain extends SubsystemBase {
 
     public void updateOdometry() {
         m_robotPosition = m_odometry.update(
-            m_gyroIO.getRotation2d(), //may need to be negative or something else
+            m_pigeon.getRotation2d(), //may need to be negative or something else
             moduleIOs[0].getState(),
             moduleIOs[1].getState(),
             moduleIOs[2].getState(),
@@ -141,11 +141,11 @@ public class Drivetrain extends SubsystemBase {
      * @param fieldRelative Whether the provided x and y speeds are relative to the field.
      */
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-        if (!RobotBase.isReal()) m_gyroIO.addHeading(rot/5);
+        if (!RobotBase.isReal()) m_pigeon.getSimCollection().addHeading(rot / (2 * Math.PI));
         var swerveModuleStates =
             m_kinematics.toSwerveModuleStates(
                 fieldRelative
-                    ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyroIO.getRotation2d())
+                    ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_pigeon.getRotation2d())
                     : new ChassisSpeeds(xSpeed, ySpeed, rot));
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.drive.kMaxSpeed);
         for (int i = 0; i < moduleIOs.length; i++) {
