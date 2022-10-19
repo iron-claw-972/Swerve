@@ -44,7 +44,7 @@ public class ModuleIOSim implements ModuleIO {
     );
 
     private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS, Constants.drive.kDriveKV);
-    private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS, Constants.drive.kSteerKV);
+    private final SimpleMotorFeedforward m_steerFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS, Constants.drive.kSteerKV);
 
     private double m_currentTurnPositionRad = 0;
     private double m_absoluteTurnPositionRad = 0;
@@ -133,10 +133,25 @@ public class ModuleIOSim implements ModuleIO {
         final double turnOutput = m_turningPIDController.calculate(m_currentTurnPositionRad, desiredState.angle.getRadians());
 
         final double turnFeedforward =
-            m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+            m_steerFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
         m_driveMotorSim.setInputVoltage(driveOutput * 5 + driveFeedforward);
         m_steerMotorSim.setInputVoltage(turnOutput + turnFeedforward);
     }
-    
+
+    public PIDController getDrivePID() {
+        return m_drivePIDController;
+    }
+
+    public ProfiledPIDController getSteerPID() {
+        return m_turningPIDController;
+    }
+
+    public SimpleMotorFeedforward getDriveFF() {
+        return m_driveFeedforward;
+    }
+
+    public SimpleMotorFeedforward getSteerFF() {
+        return m_steerFeedforward;
+    }
 }

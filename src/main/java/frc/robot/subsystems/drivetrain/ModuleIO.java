@@ -54,9 +54,9 @@ public interface ModuleIO {
     public void updateInputs(ModuleIOInputs inputs);
     public default SwerveModuleState getState() { return null; }
     public void setDesiredState(SwerveModuleState swerveModuleState);
-    public default PIDController getDrivePIDController() { return null; };
-    public default ProfiledPIDController getSteerPIDController() { return null; };
-    public default SimpleMotorFeedforward getDriveFF() { return null; };
-    public default SimpleMotorFeedforward getSteerFF() { return null; };
+    public PIDController getDrivePID();
+    public ProfiledPIDController getSteerPID();
+    public SimpleMotorFeedforward getDriveFF();
+    public SimpleMotorFeedforward getSteerFF();
     
 }

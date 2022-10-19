@@ -36,12 +36,16 @@ public class Robot extends LoggedRobot {
 
     private final Field2d m_field = new Field2d();
 
+    public static boolean isReal;
+
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
      */
     @Override
     public void robotInit() {
+
+        isReal = isReal();
 
         drive = new Drivetrain();
 

@@ -108,11 +108,11 @@ public class ModuleIOTalon implements ModuleIO {
         m_steerMotor.setVoltage(turnOutput + turnFeedforward);
     }
 
-    public PIDController getDrivePIDController() {
+    public PIDController getDrivePID() {
         return m_drivePIDController;
     }
 
-    public ProfiledPIDController getSteerPIDController() {
+    public ProfiledPIDController getSteerPID() {
         return m_turningPIDController;
     }
 
