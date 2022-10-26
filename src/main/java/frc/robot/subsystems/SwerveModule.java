@@ -20,19 +20,20 @@ public class SwerveModule {
   private final TalonEncoder m_driveEncoder;
   private final WPI_CANCoder m_encoder;
 
-  private final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP, Constants.drive.kDriveI, Constants.drive.kDriveD);
+  private final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP, Constants.drive.kDriveI,
+      Constants.drive.kDriveD);
 
-  private final ProfiledPIDController m_turningPIDController =
-    new ProfiledPIDController(
+  private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
       Constants.drive.kSteerP,
       Constants.drive.kSteerI,
       Constants.drive.kSteerD,
       new TrapezoidProfile.Constraints(
-        Constants.drive.kMaxAngularSpeed, 2 * Math.PI)
-  );
+          Constants.drive.kMaxAngularSpeed, 2 * Math.PI));
 
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS, Constants.drive.kDriveKV);
-  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS, Constants.drive.kSteerKV);
+  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS,
+      Constants.drive.kDriveKV);
+  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS,
+      Constants.drive.kSteerKV);
 
   public SwerveModule(
       int driveMotorPort,
@@ -45,8 +46,10 @@ public class SwerveModule {
     m_driveEncoder = new TalonEncoder(m_driveMotor);
     m_encoder = new WPI_CANCoder(encoderPort, Constants.kCanivoreCAN);
 
-    // reset encoder to factory defaults, reset position to the measurement of the absolute encoder
-    // by default the CANcoder sets it's feedback coefficient to 0.087890625, to make degrees. 
+    // reset encoder to factory defaults, reset position to the measurement of the
+    // absolute encoder
+    // by default the CANcoder sets it's feedback coefficient to 0.087890625, to
+    // make degrees.
     m_encoder.configFactoryDefault();
     m_encoder.setPositionToAbsolute();
 
@@ -55,7 +58,8 @@ public class SwerveModule {
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
-    m_driveEncoder.setDistancePerPulse(2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kGearRatio / Constants.kEncoderResolution);
+    m_driveEncoder.setDistancePerPulse(
+        2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kGearRatio / Constants.kEncoderResolution);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
@@ -77,22 +81,24 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
+    if (Math.abs(desiredState.speedMetersPerSecond) < 0.001) {
+      stop();
+      return;
+    }
     // Optimize the reference state to avoid spinning further than 90 degrees
-    desiredState =
-        SwerveModuleState.optimize(desiredState, new Rotation2d(m_encoder.getAbsolutePosition()));
+    desiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(m_encoder.getAbsolutePosition()));
 
     // Calculate the drive output from the drive PID controller.
-    final double driveOutput =
-        m_drivePIDController.calculate(m_driveEncoder.getRate(), desiredState.speedMetersPerSecond);
+    final double driveOutput = m_drivePIDController.calculate(m_driveEncoder.getRate(),
+        desiredState.speedMetersPerSecond);
 
     final double driveFeedforward = m_driveFeedforward.calculate(desiredState.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
-    final double turnOutput =
-        m_turningPIDController.calculate(m_encoder.getAbsolutePosition(), desiredState.angle.getRadians());
+    final double turnOutput = m_turningPIDController.calculate(m_encoder.getAbsolutePosition(),
+        desiredState.angle.getRadians());
 
-    final double turnFeedforward =
-        m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+    final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
     m_driveMotor.setVoltage(driveOutput + driveFeedforward);
     m_steerMotor.setVoltage(turnOutput + turnFeedforward);
@@ -100,5 +106,10 @@ public class SwerveModule {
 
   public double getAngle() {
     return m_encoder.getAbsolutePosition();
+  }
+
+  public void stop() {
+    m_driveMotor.set(0);
+    m_steerMotor.set(0);
   }
 }
