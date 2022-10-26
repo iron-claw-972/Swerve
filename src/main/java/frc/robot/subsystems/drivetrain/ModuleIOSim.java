@@ -20,7 +20,8 @@ public class ModuleIOSim implements ModuleIO {
 
     // TODO: need these values!
     private FlywheelSim m_driveMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), Constants.drive.kGearRatio, 0.025);
-    private FlywheelSim m_steerMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), Constants.drive.kGearRatioSteer, 0.004096955);
+    private FlywheelSim m_steerMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), Constants.drive.kGearRatioSteer,
+            0.004096955);
 
     private final WPI_TalonFX m_driveMotor;
     private final WPI_TalonFX m_steerMotor;
@@ -34,26 +35,28 @@ public class ModuleIOSim implements ModuleIO {
     private final TalonEncoderSim m_driveEncoderSim;
     private final CANCoderSimCollection m_encoderSim;
 
-    private final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP, Constants.drive.kDriveI, Constants.drive.kDriveD);
+    private final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP,
+            Constants.drive.kDriveI, Constants.drive.kDriveD);
 
     private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-        Constants.drive.kSteerP, 
-        Constants.drive.kSteerI, 
-        Constants.drive.kSteerD,
-        new TrapezoidProfile.Constraints(Constants.drive.kMaxAngularSpeed, 2 * Math.PI)
-    );
+            Constants.drive.kSteerP,
+            Constants.drive.kSteerI,
+            Constants.drive.kSteerD,
+            new TrapezoidProfile.Constraints(Constants.drive.kMaxAngularSpeed, 2 * Math.PI));
 
-    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS, Constants.drive.kDriveKV);
-    private final SimpleMotorFeedforward m_steerFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS, Constants.drive.kSteerKV);
+    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS,
+            Constants.drive.kDriveKV);
+    private final SimpleMotorFeedforward m_steerFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS,
+            Constants.drive.kSteerKV);
 
     private double m_currentTurnPositionRad = 0;
     private double m_absoluteTurnPositionRad = 0;
 
     public ModuleIOSim(
-        int driveMotorPort,
-        int steerMotorPort,
-        int encoderPort,
-        double encoderOffset) {
+            int driveMotorPort,
+            int steerMotorPort,
+            int encoderPort,
+            double encoderOffset) {
         m_driveMotor = new WPI_TalonFX(driveMotorPort);
         m_steerMotor = new WPI_TalonFX(steerMotorPort);
 
@@ -71,7 +74,8 @@ public class ModuleIOSim implements ModuleIO {
         // Set the distance per pulse for the drive encoder. We can simply use the
         // distance traveled for one rotation of the wheel divided by the encoder
         // resolution.
-        m_driveEncoder.setDistancePerPulse(2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kGearRatio / Constants.kEncoderResolution);
+        m_driveEncoder.setDistancePerPulse(
+                2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kGearRatio / Constants.kEncoderResolution);
 
         // Limit the PID Controller's input range between -pi and pi and set the input
         // to be continuous.
@@ -86,12 +90,12 @@ public class ModuleIOSim implements ModuleIO {
 
         inputs.driveVelocity = m_driveEncoderSim.getRate();
         inputs.driveAppliedVolts = 0;
-        inputs.driveCurrentAmps = new double[] {m_driveMotorSim.getCurrentDrawAmps()};
+        inputs.driveCurrentAmps = new double[] { m_driveMotorSim.getCurrentDrawAmps() };
         inputs.driveTempCelcius = new double[] {};
 
         inputs.steerAngle = new Rotation2d(m_steerMotor.get()).getDegrees();
         inputs.steerAppliedVolts = 0;
-        inputs.steerCurrentAmps = new double[] {m_steerMotorSim.getCurrentDrawAmps()};
+        inputs.steerCurrentAmps = new double[] { m_steerMotorSim.getCurrentDrawAmps() };
         inputs.steerTempCelcius = new double[] {};
 
         double angleDiffRad = m_steerMotorSim.getAngularVelocityRadPerSec() * 0.02;
@@ -111,8 +115,11 @@ public class ModuleIOSim implements ModuleIO {
      * @return The current state of the module.
      */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(m_driveMotorSim.getAngularVelocityRPM() * Constants.drive.kWheelRadius * 2 * Math.PI / 60, new Rotation2d(m_currentTurnPositionRad));
-        // return new SwerveModuleState(m_driveMotor.getSelectedSensorVelocity(), new Rotation2d(m_steerMotor.get()));
+        return new SwerveModuleState(
+                m_driveMotorSim.getAngularVelocityRPM() * Constants.drive.kWheelRadius * 2 * Math.PI / 60,
+                new Rotation2d(m_currentTurnPositionRad));
+        // return new SwerveModuleState(m_driveMotor.getSelectedSensorVelocity(), new
+        // Rotation2d(m_steerMotor.get()));
     }
 
     /**
@@ -121,19 +128,23 @@ public class ModuleIOSim implements ModuleIO {
      * @param desiredState Desired state with speed and angle.
      */
     public void setDesiredState(SwerveModuleState desiredState) {
+        if (Math.abs(desiredState.speedMetersPerSecond) < 0.001) {
+            stop();
+            return;
+        }
         // Optimize the reference state to avoid spinning further than 90 degrees
         desiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(m_currentTurnPositionRad));
 
         // Calculate the drive output from the drive PID controller.
-        final double driveOutput =
-            m_drivePIDController.calculate(m_driveEncoder.getRate(), desiredState.speedMetersPerSecond);
+        final double driveOutput = m_drivePIDController.calculate(m_driveEncoder.getRate(),
+                desiredState.speedMetersPerSecond);
 
         final double driveFeedforward = m_driveFeedforward.calculate(desiredState.speedMetersPerSecond);
-        
-        final double turnOutput = m_turningPIDController.calculate(m_currentTurnPositionRad, desiredState.angle.getRadians());
 
-        final double turnFeedforward =
-            m_steerFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+        final double turnOutput = m_turningPIDController.calculate(m_currentTurnPositionRad,
+                desiredState.angle.getRadians());
+
+        final double turnFeedforward = m_steerFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
         m_driveMotorSim.setInputVoltage(driveOutput * 5 + driveFeedforward);
         m_steerMotorSim.setInputVoltage(turnOutput + turnFeedforward);
@@ -153,5 +164,10 @@ public class ModuleIOSim implements ModuleIO {
 
     public SimpleMotorFeedforward getSteerFF() {
         return m_steerFeedforward;
+    }
+
+    public void stop() {
+        m_driveMotor.set(0);
+        m_steerMotor.set(0);
     }
 }
