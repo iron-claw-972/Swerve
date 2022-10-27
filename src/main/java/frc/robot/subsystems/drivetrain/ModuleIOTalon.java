@@ -78,7 +78,7 @@ public class ModuleIOTalon implements ModuleIO {
      * @return The current state of the module.
      */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(m_driveMotor.getSelectedSensorVelocity(), new Rotation2d(m_steerMotor.get()));
+        return new SwerveModuleState(m_driveMotor.getSelectedSensorVelocity(), new Rotation2d(m_encoder.getAbsolutePosition()));
     }
 
     /**
@@ -87,25 +87,33 @@ public class ModuleIOTalon implements ModuleIO {
      * @param desiredState Desired state with speed and angle.
      */
     public void setDesiredState(SwerveModuleState desiredState) {
+        if (Math.abs(desiredState.speedMetersPerSecond) < 0.001) {
+            stop();
+            return;
+        }
         // Optimize the reference state to avoid spinning further than 90 degrees
         desiredState =
             SwerveModuleState.optimize(desiredState, new Rotation2d(m_encoder.getAbsolutePosition()));
 
         // Calculate the drive output from the drive PID controller.
-        final double driveOutput =
-            m_drivePIDController.calculate(m_driveEncoder.getRate(), desiredState.speedMetersPerSecond);
+        double driveOutput = m_drivePIDController.calculate(m_driveEncoder.getRate(), desiredState.speedMetersPerSecond);
 
         final double driveFeedforward = m_driveFeedforward.calculate(desiredState.speedMetersPerSecond);
 
         // Calculate the turning motor output from the turning PID controller.
-        final double turnOutput =
-            m_turningPIDController.calculate(m_encoder.getAbsolutePosition(), desiredState.angle.getRadians());
+        double turnOutput =
+            m_turningPIDController.calculate(Units.degreesToRadians(m_encoder.getAbsolutePosition()), desiredState.angle.getRadians());
 
         final double turnFeedforward =
             m_steerFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
         m_driveMotor.setVoltage(driveOutput + driveFeedforward);
         m_steerMotor.setVoltage(turnOutput + turnFeedforward);
+    }
+
+    public void stop() {
+        m_driveMotor.set(0);
+        m_steerMotor.set(0);
     }
 
     public PIDController getDrivePID() {

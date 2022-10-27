@@ -19,7 +19,7 @@ import frc.robot.subsystems.drivetrain.ModuleIO.ModuleIOInputs;
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
 
-    private WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kRioCAN);
+    private WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kCanivoreCAN);
 
     public final ModuleIO[] moduleIOs = new ModuleIO[4];
     public ModuleIO[] getModuleIOs() {
