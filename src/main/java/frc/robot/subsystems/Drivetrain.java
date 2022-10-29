@@ -46,7 +46,7 @@ public class Drivetrain extends SubsystemBase {
     FRONT_LEFT, FRONT_RIGHT, BACK_LEFT, BACK_RIGHT
   }
 
-  private final WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kRioCAN);
+  private final WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kCanivoreCAN);
 
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(

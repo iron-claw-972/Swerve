@@ -72,7 +72,7 @@ public class SwerveModule {
    * @return The current state of the module.
    */
   public SwerveModuleState getState() {
-    return new SwerveModuleState(m_driveMotor.getSelectedSensorVelocity(), new Rotation2d(m_steerMotor.get()));
+    return new SwerveModuleState(m_driveMotor.getSelectedSensorVelocity(), new Rotation2d(Units.degreesToRadians(m_encoder.getAbsolutePosition())));
   }
 
   /**
