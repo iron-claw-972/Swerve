@@ -54,11 +54,6 @@ public class ShuffleboardManager {
     m_driveTab.add("FR Steer PID", Robot.drive.m_frontRight.getSteerPID());
     m_driveTab.add("BL Steer PID", Robot.drive.m_backLeft.getSteerPID());
     m_driveTab.add("BR Steer PID", Robot.drive.m_backRight.getSteerPID());
-
-    m_driveTab.addNumber("FL output steer", () -> Robot.drive.m_frontLeft.getOutput());
-    m_driveTab.addNumber("FR output steer", () -> Robot.drive.m_frontRight.getOutput());
-    m_driveTab.addNumber("BL output steer", () -> Robot.drive.m_backLeft.getOutput());
-    m_driveTab.addNumber("BR output steer", () -> Robot.drive.m_backRight.getOutput());
   }
 
 }

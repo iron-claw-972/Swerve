@@ -59,7 +59,7 @@ public class SwerveModule {
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
     m_driveEncoder.setDistancePerPulse(
-        2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kGearRatio / Constants.kEncoderResolution);
+        2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kDriveGearRatio / Constants.kEncoderResolution);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
@@ -110,8 +110,6 @@ public class SwerveModule {
 
   public double getAngle() {
     return m_encoder.getAbsolutePosition();
-  public double getOutput() {
-    return turnOutput;
   }
 
   public void stop() {
