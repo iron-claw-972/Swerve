@@ -42,6 +42,11 @@ public class TalonEncoder implements Sendable, AutoCloseable {
     m_motor.setSelectedSensorPosition(0);
   }
 
+  /** Reset the Encoder distance */
+  public void setPosition(double pos) {
+    m_motor.setSelectedSensorPosition(pos);
+  }
+
   /**
    * Returns the period of the most recent pulse. Returns the period of the most recent Encoder
    * pulse in seconds. This method compensates for the decoding type.

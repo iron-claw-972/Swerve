@@ -45,10 +45,20 @@ public class ShuffleboardManager {
   }
 
   private void setupDrivetrain() {
-    m_driveTab.addNumber("Angle Front Left", () -> Robot.drive.getModuleAngle(ModuleLocation.FRONT_LEFT));
+    m_driveTab.addNumber("Angle Front Left",  () -> Robot.drive.getModuleAngle(ModuleLocation.FRONT_LEFT));
     m_driveTab.addNumber("Angle Front Right", () -> Robot.drive.getModuleAngle(ModuleLocation.FRONT_RIGHT));
-    m_driveTab.addNumber("Angle Back Left", () -> Robot.drive.getModuleAngle(ModuleLocation.BACK_LEFT));
-    m_driveTab.addNumber("Angle Back Right", () -> Robot.drive.getModuleAngle(ModuleLocation.BACK_RIGHT));
+    m_driveTab.addNumber("Angle Back Left",   () -> Robot.drive.getModuleAngle(ModuleLocation.BACK_LEFT));
+    m_driveTab.addNumber("Angle Back Right",  () -> Robot.drive.getModuleAngle(ModuleLocation.BACK_RIGHT));
+
+    m_driveTab.add("FL Steer PID", Robot.drive.m_frontLeft.getSteerPID());
+    m_driveTab.add("FR Steer PID", Robot.drive.m_frontRight.getSteerPID());
+    m_driveTab.add("BL Steer PID", Robot.drive.m_backLeft.getSteerPID());
+    m_driveTab.add("BR Steer PID", Robot.drive.m_backRight.getSteerPID());
+
+    m_driveTab.addNumber("FL output steer", () -> Robot.drive.m_frontLeft.getOutput());
+    m_driveTab.addNumber("FR output steer", () -> Robot.drive.m_frontRight.getOutput());
+    m_driveTab.addNumber("BL output steer", () -> Robot.drive.m_backLeft.getOutput());
+    m_driveTab.addNumber("BR output steer", () -> Robot.drive.m_backRight.getOutput());
   }
 
 }

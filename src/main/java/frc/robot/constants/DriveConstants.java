@@ -8,8 +8,9 @@ public class DriveConstants {
     public final double kWheelRadius = Units.inchesToMeters(2);
 
     public final double kTrackWidth = Units.inchesToMeters(22.75);
-    public final double kGearRatio = 6.75;
-    public final double kMaxSpeed = 6380.0 / 60.0 / kGearRatio * kWheelRadius * 2 * Math.PI;
+    public final double kDriveGearRatio = 6.75;
+    public final double kSteerGearRatio = 150.0 / 7;
+    public final double kMaxSpeed = 6380.0 / 60.0 / kDriveGearRatio * kWheelRadius * 2 * Math.PI;
 
     public final int kPigeon = 13;
 
@@ -39,7 +40,7 @@ public class DriveConstants {
     public final double kDriveI = 0;
     public final double kDriveD = 0;
     // Steer
-    public final double kSteerP = 0.3; //SDS: 0.2
+    public final double kSteerP = 0.05; //SDS: 0.2
     public final double kSteerI = 0;
     public final double kSteerD = 0; //SDS: 0.1
 
@@ -48,6 +49,6 @@ public class DriveConstants {
     public final double kDriveKS = 0;
     public final double kDriveKV = 0;
     // Steer
-    public final double kSteerKS = 0;
-    public final double kSteerKV = 0;
+    public final double kSteerKS = 1;
+    public final double kSteerKV = 0.5;
 }

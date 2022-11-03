@@ -72,7 +72,11 @@ public class SwerveModule {
    * @return The current state of the module.
    */
   public SwerveModuleState getState() {
-    return new SwerveModuleState(m_driveMotor.getSelectedSensorVelocity(), new Rotation2d(Units.degreesToRadians(m_encoder.getAbsolutePosition())));
+    return new SwerveModuleState(m_driveMotor.getSelectedSensorVelocity(), new Rotation2d(getAngle()));
+  }
+
+  public ProfiledPIDController getSteerPID() {
+    return m_turningPIDController;
   }
 
   /**
@@ -106,6 +110,8 @@ public class SwerveModule {
 
   public double getAngle() {
     return m_encoder.getAbsolutePosition();
+  public double getOutput() {
+    return turnOutput;
   }
 
   public void stop() {
