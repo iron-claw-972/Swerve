@@ -38,9 +38,9 @@ public class SwerveModule {
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS,
       Constants.drive.kSteerKV);
 
-  public double turnOutput = 0.0;
-
   public double m_offset = 0.0;
+
+  public double driveOutput = 0;
 
   public SwerveModule(
       int driveMotorPort,
@@ -106,24 +106,30 @@ public class SwerveModule {
     // desiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(m_encoder.getAbsolutePosition()));
 
     // Calculate the drive output from the drive PID controller.
-    final double driveOutput = m_drivePIDController.calculate(m_driveEncoder.getRate(),
-        desiredState.speedMetersPerSecond);
+    driveOutput = m_drivePIDController.calculate(m_driveEncoder.getRate(),
+    Robot.shuffleboardAngle.getDouble(0));
 
     final double driveFeedforward = m_driveFeedforward.calculate(desiredState.speedMetersPerSecond);
 
-    m_turningPIDController.setP(Robot.shuffleboardP.getDouble(Constants.drive.kSteerP));
-
     // Calculate the turning motor output from the turning PID controller.
-    turnOutput = m_turningPIDController.calculate(getAngle(), Robot.shuffleboardAngle.getDouble(0));
+    double turnOutput = m_turningPIDController.calculate(getAngle(), 0);
 
     //final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-    //m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-    m_steerMotor.set(turnOutput); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()
+    m_driveMotor.set(driveOutput);
+    // m_steerMotor.set(turnOutput); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()
   }
 
   public double getAngle() {
     return m_encoder.getAbsolutePosition() - m_offset;
+  }
+
+  public double getDriveVelocity() {
+    return m_driveEncoder.getRate();
+  }
+
+  public PIDController getDrivePID() {
+    return m_drivePIDController;
   }
 
   public void stop() {

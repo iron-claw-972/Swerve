@@ -27,7 +27,7 @@ public class DriveConstants {
     public final int kDriveBackLeft = 7; 
     public final int kSteerBackLeft = 8;
     public final int kEncoderBackLeft = 9; 
-    public final double kSteerOffsetBackLeft = 3.136;
+    public final double kSteerOffsetBackLeft = 0;
 
     public final int kDriveBackRight = 10;
     public final int kSteerBackRight = 11;
@@ -36,7 +36,7 @@ public class DriveConstants {
 
     // PID
     // Drive
-    public final double kDriveP = 0.05;
+    public final double kDriveP = 0.3;
     public final double kDriveI = 0;
     public final double kDriveD = 0;
     // Steer
@@ -46,8 +46,8 @@ public class DriveConstants {
 
     // FEEDFORWARD
     // Drive
-    public final double kDriveKS = 0;
-    public final double kDriveKV = 0;
+    public final double kDriveKS = 1;
+    public final double kDriveKV = 3;
     // Steer
     public final double kSteerKS = 1;
     public final double kSteerKV = 0.5;
