@@ -40,6 +40,8 @@ public class SwerveModule {
 
   public double turnOutput = 0.0;
 
+  public double m_offset = 0.0;
+
   public SwerveModule(
       int driveMotorPort,
       int steerMotorPort,
@@ -62,6 +64,8 @@ public class SwerveModule {
 
     m_encoder.configFeedbackCoefficient(2 * Math.PI / Constants.kCANcoderResolution, "rad", SensorTimeBase.PerSecond);
 
+    m_offset = encoderOffset;
+
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
@@ -69,8 +73,10 @@ public class SwerveModule {
         2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kDriveGearRatio / Constants.kEncoderResolution);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
-    // to be continuous.
-    m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+    // to be continuous. Factor in the offset amount.
+    m_turningPIDController.enableContinuousInput(-Math.PI + m_offset, Math.PI + m_offset);
+
+    m_steerMotor.setInverted(true);
   }
 
   /**
@@ -113,11 +119,11 @@ public class SwerveModule {
     //final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
     //m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-    m_steerMotor.set(-turnOutput); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()
+    m_steerMotor.set(turnOutput); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()
   }
 
   public double getAngle() {
-    return m_encoder.getAbsolutePosition();
+    return m_encoder.getAbsolutePosition() - m_offset;
   }
 
   public void stop() {
