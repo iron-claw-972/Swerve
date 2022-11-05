@@ -98,26 +98,25 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    // if (Math.abs(desiredState.speedMetersPerSecond) < 0.001) {
-    //   stop();
-    //   return;
-    // }
-    // // Optimize the reference state to avoid spinning further than 90 degrees
-    // desiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(m_encoder.getAbsolutePosition()));
+    if (Math.abs(desiredState.speedMetersPerSecond) < 0.001) {
+      stop();
+      return;
+    }
+    // Optimize the reference state to avoid spinning further than 90 degrees
+    desiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(getAngle()));
 
     // Calculate the drive output from the drive PID controller.
-    driveOutput = m_drivePIDController.calculate(m_driveEncoder.getRate(),
-    Robot.shuffleboardAngle.getDouble(0));
+    driveOutput = m_drivePIDController.calculate(m_driveEncoder.getRate(), desiredState.speedMetersPerSecond);
 
     final double driveFeedforward = m_driveFeedforward.calculate(desiredState.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
-    double turnOutput = m_turningPIDController.calculate(getAngle(), 0);
+    double turnOutput = m_turningPIDController.calculate(getAngle(), desiredState.angle.getRadians());
 
     //final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-    m_driveMotor.set(driveOutput);
-    // m_steerMotor.set(turnOutput); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()
+    m_driveMotor.setVoltage(driveOutput + driveFeedforward);
+    m_steerMotor.set(turnOutput); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()
   }
 
   public double getAngle() {

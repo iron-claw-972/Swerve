@@ -36,7 +36,7 @@ public class DriveConstants {
 
     // PID
     // Drive
-    public final double kDriveP = 0.3;
+    public final double kDriveP = 1;
     public final double kDriveI = 0;
     public final double kDriveD = 0;
     // Steer
