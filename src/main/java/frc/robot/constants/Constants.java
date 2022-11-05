@@ -7,7 +7,7 @@ public final class Constants {
   public static final double kCANcoderResolution = 4096;
 
   // CAN bus names
-  public static final String kCanivoreCAN = "rio";
+  public static final String kCanivoreCAN = "CANivore";
   public static final String kRioCAN = "rio";
 
   public static final OIConstants oi = new OIConstants();

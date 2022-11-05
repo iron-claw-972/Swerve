@@ -10,9 +10,9 @@ import frc.robot.subsystems.Drivetrain;
 public class DefaultDriveCommand extends CommandBase {
     private final Drivetrain m_drive;
 
-    private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
-    private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
-    private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(0);
+    private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(0);
+    private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(0);
 
     public DefaultDriveCommand(Drivetrain drive) {
         this.m_drive = drive;
@@ -28,23 +28,20 @@ public class DefaultDriveCommand extends CommandBase {
     private void driveWithJoystick(boolean fieldRelative) {
         // Get the x speed. We are inverting this because Xbox controllers return
         // negative values when we push forward.
-        final var xSpeed =
-            -m_xspeedLimiter.calculate(MathUtil.applyDeadband(Driver.getRawLeftY(), 0.02))
+        final var xSpeed = MathUtil.applyDeadband(Driver.getRawLeftY(), 0.02)
                 * Constants.drive.kMaxSpeed;
     
         // Get the y speed or sideways/strafe speed. We are inverting this because
         // we want a positive value when we pull to the left. Xbox controllers
         // return positive values when you pull to the right by default.
-        final var ySpeed =
-            -m_yspeedLimiter.calculate(MathUtil.applyDeadband(Driver.getRawLeftX(), 0.02))
+        final var ySpeed = MathUtil.applyDeadband(Driver.getRawLeftX(), 0.02)
                 * Constants.drive.kMaxSpeed;
     
         // Get the rate of angular rotation. We are inverting this because we want a
         // positive value when we pull to the left (remember, CCW is positive in
         // mathematics). Xbox controllers return positive values when you pull to
         // the right by default.
-        final var rot =
-            -m_rotLimiter.calculate(MathUtil.applyDeadband(Driver.getRawRightX(), 0.02))
+        final var rot = MathUtil.applyDeadband(Driver.getRawRightX(), 0.02)
                 * Constants.drive.kMaxAngularSpeed;
     
         m_drive.drive(xSpeed, ySpeed, rot, fieldRelative);

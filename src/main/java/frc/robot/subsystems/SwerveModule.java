@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.SensorTimeBase;
@@ -49,6 +50,9 @@ public class SwerveModule {
       double encoderOffset) {
     m_driveMotor = new WPI_TalonFX(driveMotorPort, Constants.kCanivoreCAN);
     m_steerMotor = new WPI_TalonFX(steerMotorPort, Constants.kCanivoreCAN);
+
+    m_driveMotor.setNeutralMode(NeutralMode.Brake);
+    m_steerMotor.setNeutralMode(NeutralMode.Brake);
 
     m_driveEncoder = new TalonEncoder(m_driveMotor);
     m_encoder = new WPI_CANCoder(encoderPort, Constants.kCanivoreCAN);
@@ -113,7 +117,7 @@ public class SwerveModule {
     // Calculate the turning motor output from the turning PID controller.
     double turnOutput = m_turningPIDController.calculate(getAngle(), desiredState.angle.getRadians());
 
-    //final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+    final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
     m_driveMotor.setVoltage(driveOutput + driveFeedforward);
     m_steerMotor.set(turnOutput); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()

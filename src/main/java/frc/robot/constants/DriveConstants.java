@@ -10,7 +10,7 @@ public class DriveConstants {
     public final double kTrackWidth = Units.inchesToMeters(22.75);
     public final double kDriveGearRatio = 6.75;
     public final double kSteerGearRatio = 150.0 / 7;
-    public final double kMaxSpeed = 6380.0 / 60.0 / kDriveGearRatio * kWheelRadius * 2 * Math.PI;
+    public final double kMaxSpeed = 0.75 * 6380.0 / 60.0 / kDriveGearRatio * kWheelRadius * 2 * Math.PI;
 
     public final int kPigeon = 13;
 
