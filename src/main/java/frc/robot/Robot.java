@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.*;
+import frc.robot.constants.Constants;
 import frc.robot.controls.Driver;
 import frc.robot.controls.Operator;
 import frc.robot.subsystems.Drivetrain;
@@ -25,12 +28,19 @@ public class Robot extends TimedRobot {
   public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
   public static Drivetrain drive = new Drivetrain();
 
+  public static NetworkTableEntry shuffleboardAngle;
+  public static NetworkTableEntry shuffleboardP;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+
+    shuffleboardAngle = Shuffleboard.getTab("Drive").add("Angle", 0).getEntry();
+    
+    shuffleboardP = Shuffleboard.getTab("Drive").add("P", Constants.drive.kSteerP).getEntry();
 
     // This is really annoying so it's disabled
     DriverStation.silenceJoystickConnectionWarning(true);

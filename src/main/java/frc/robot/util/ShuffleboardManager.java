@@ -50,10 +50,14 @@ public class ShuffleboardManager {
     m_driveTab.addNumber("Angle Back Left",   () -> Robot.drive.getModuleAngle(ModuleLocation.BACK_LEFT));
     m_driveTab.addNumber("Angle Back Right",  () -> Robot.drive.getModuleAngle(ModuleLocation.BACK_RIGHT));
 
-    m_driveTab.add("FL Steer PID", Robot.drive.m_frontLeft.getSteerPID());
-    m_driveTab.add("FR Steer PID", Robot.drive.m_frontRight.getSteerPID());
-    m_driveTab.add("BL Steer PID", Robot.drive.m_backLeft.getSteerPID());
-    m_driveTab.add("BR Steer PID", Robot.drive.m_backRight.getSteerPID());
+
+    m_driveTab.addNumber("Vel Front Right", () -> Robot.drive.m_frontRight.getDriveVelocity());
+    m_driveTab.addNumber("Drive Output Front Right", () -> Robot.drive.m_frontRight.driveOutput);
+    m_driveTab.add("FR Drive PID", Robot.drive.m_frontRight.getDrivePID());
+
+    m_driveTab.addNumber("Vel Front Left", () -> Robot.drive.m_frontLeft.getDriveVelocity());
+    m_driveTab.addNumber("Drive Output Front Left", () -> Robot.drive.m_frontLeft.driveOutput);
+    m_driveTab.add("FL Drive PID", Robot.drive.m_frontLeft.getDrivePID());
   }
 
 }

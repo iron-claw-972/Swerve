@@ -4,6 +4,7 @@ public final class Constants {
   public static final double GRAVITATIONAL_ACCEL = 9.8;
   public static final double kMaxVoltage = 12.0;
   public static final double kEncoderResolution = 2048;
+  public static final double kCANcoderResolution = 4096;
 
   // CAN bus names
   public static final String kCanivoreCAN = "CANivore";
