@@ -40,7 +40,7 @@ public class DriveConstants {
     public final double kDriveI = 0;
     public final double kDriveD = 0;
     // Steer
-    public final double kSteerP = 1; //SDS: 0.2
+    public final double kSteerP = 12; //SDS: 0.2
     public final double kSteerI = 0;
     public final double kSteerD = 0; //SDS: 0.1
 

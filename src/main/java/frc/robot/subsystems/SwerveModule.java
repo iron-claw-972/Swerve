@@ -96,6 +96,9 @@ public class SwerveModule {
     return m_turningPIDController;
   }
 
+  public double turnFeedforward = 0.0;
+  public double turnOutput = 0.0;
+
   /**
    * Sets the desired state for the module.
    *
@@ -115,12 +118,12 @@ public class SwerveModule {
     final double driveFeedforward = m_driveFeedforward.calculate(desiredState.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
-    double turnOutput = m_turningPIDController.calculate(getAngle(), desiredState.angle.getRadians());
+    turnOutput = m_turningPIDController.calculate(getAngle(), desiredState.angle.getRadians());
 
-    final double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+    turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-    m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-    m_steerMotor.set(turnOutput); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()
+    // m_driveMotor.setVoltage(driveOutput + driveFeedforward);
+    m_steerMotor.setVoltage(turnOutput + turnFeedforward); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()
   }
 
   public double getAngle() {

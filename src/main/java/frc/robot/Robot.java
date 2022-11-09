@@ -28,19 +28,12 @@ public class Robot extends TimedRobot {
   public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
   public static Drivetrain drive = new Drivetrain();
 
-  public static NetworkTableEntry shuffleboardAngle;
-  public static NetworkTableEntry shuffleboardP;
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
-
-    shuffleboardAngle = Shuffleboard.getTab("Drive").add("Angle", 0).getEntry();
-    
-    shuffleboardP = Shuffleboard.getTab("Drive").add("P", Constants.drive.kSteerP).getEntry();
 
     // This is really annoying so it's disabled
     DriverStation.silenceJoystickConnectionWarning(true);

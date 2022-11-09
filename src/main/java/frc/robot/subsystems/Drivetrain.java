@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
@@ -16,6 +17,8 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_frontRightLocation = new Translation2d(Constants.drive.kTrackWidth / 2, -Constants.drive.kTrackWidth / 2);
   private final Translation2d m_backLeftLocation = new Translation2d(-Constants.drive.kTrackWidth / 2, Constants.drive.kTrackWidth / 2);
   private final Translation2d m_backRightLocation = new Translation2d(-Constants.drive.kTrackWidth / 2, -Constants.drive.kTrackWidth / 2);
+
+  public SwerveModuleState[] swerveModuleStates = new SwerveModuleState[] {new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
 
   public final SwerveModule m_frontLeft = new SwerveModule(
     Constants.drive.kDriveFrontLeft,
@@ -41,10 +44,6 @@ public class Drivetrain extends SubsystemBase {
     Constants.drive.kEncoderBackRight,
     Constants.drive.kSteerOffsetBackRight
   );
-
-  public enum ModuleLocation {
-    FRONT_LEFT, FRONT_RIGHT, BACK_LEFT, BACK_RIGHT
-  }
 
   private final WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kCanivoreCAN);
 
@@ -72,7 +71,7 @@ public class Drivetrain extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    var swerveModuleStates =
+    swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_pigeon.getRotation2d())
@@ -94,16 +93,4 @@ public class Drivetrain extends SubsystemBase {
         m_backRight.getState());
   }
 
-  public double getModuleAngle(ModuleLocation module) {
-    if (module == ModuleLocation.FRONT_LEFT) {
-      return m_frontLeft.getAngle();
-    } else if (module == ModuleLocation.FRONT_RIGHT) {
-      return m_frontRight.getAngle();
-    } else if (module == ModuleLocation.BACK_LEFT) {
-      return m_backLeft.getAngle();
-    } else if (module == ModuleLocation.BACK_RIGHT) {
-      return m_backRight.getAngle();
-    }
-    return -1;
-  }
 }
