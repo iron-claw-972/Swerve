@@ -47,14 +47,14 @@ public class Drivetrain extends SubsystemBase {
 
   private final WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kCanivoreCAN);
 
-  private final SwerveDriveKinematics m_kinematics =
+  public final SwerveDriveKinematics kinematics =
       new SwerveDriveKinematics(
           m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
   private final SwerveDriveOdometry m_odometry;
 
   public Drivetrain() {
-    m_odometry = new SwerveDriveOdometry(m_kinematics, m_pigeon.getRotation2d());
+    m_odometry = new SwerveDriveOdometry(kinematics, m_pigeon.getRotation2d());
   }
 
   @Override
@@ -72,7 +72,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     swerveModuleStates =
-        m_kinematics.toSwerveModuleStates(
+        kinematics.toSwerveModuleStates(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_pigeon.getRotation2d())
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
@@ -91,6 +91,13 @@ public class Drivetrain extends SubsystemBase {
         m_frontRight.getState(),
         m_backLeft.getState(),
         m_backRight.getState());
+  }
+
+  public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
+    m_frontLeft.setDesiredState(swerveModuleStates[0]);
+    m_frontRight.setDesiredState(swerveModuleStates[1]);
+    m_backLeft.setDesiredState(swerveModuleStates[2]);
+    m_backRight.setDesiredState(swerveModuleStates[3]);
   }
 
 }
