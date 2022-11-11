@@ -27,12 +27,12 @@ public class SwerveModule {
   private final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP, Constants.drive.kDriveI,
       Constants.drive.kDriveD);
 
-  private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
+  private ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
       Constants.drive.kSteerP,
       Constants.drive.kSteerI,
       Constants.drive.kSteerD,
       new TrapezoidProfile.Constraints(
-          Constants.drive.kMaxAngularSpeed, 2 * Math.PI));
+          Constants.drive.kMaxAngularSpeed, Constants.drive.kMaxAngularAccel));
 
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS,
       Constants.drive.kDriveKV);

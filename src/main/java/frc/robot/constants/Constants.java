@@ -5,6 +5,7 @@ public final class Constants {
   public static final double kMaxVoltage = 12.0;
   public static final double kEncoderResolution = 2048;
   public static final double kCANcoderResolution = 4096;
+  public static final double kFalconMaxRPM = 6380.0;
 
   // CAN bus names
   public static final String kCanivoreCAN = "CANivore";

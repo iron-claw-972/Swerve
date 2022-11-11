@@ -44,10 +44,10 @@ public class ShuffleboardManager {
   }
 
   private void setupDrivetrain() {
-    // m_driveTab.addNumber("Angle Front Left",  () -> Robot.drive.m_frontLeft.getAngle());
-    // m_driveTab.addNumber("Angle Front Right", () -> Robot.drive.m_frontRight.getAngle());
-    // m_driveTab.addNumber("Angle Back Left",   () -> Robot.drive.m_backLeft.getAngle());
-    // m_driveTab.addNumber("Angle Back Right",  () -> Robot.drive.m_backRight.getAngle());
+    m_driveTab.addNumber("Angle Front Left",  () -> Robot.drive.m_frontLeft.getAngle());
+    m_driveTab.addNumber("Angle Front Right", () -> Robot.drive.m_frontRight.getAngle());
+    m_driveTab.addNumber("Angle Back Left",   () -> Robot.drive.m_backLeft.getAngle());
+    m_driveTab.addNumber("Angle Back Right",  () -> Robot.drive.m_backRight.getAngle());
 
     // m_driveTab.addNumber("FL desired speed", () -> Robot.drive.swerveModuleStates[0].speedMetersPerSecond);
     // m_driveTab.addNumber("FR desired speed", () -> Robot.drive.swerveModuleStates[1].speedMetersPerSecond);
