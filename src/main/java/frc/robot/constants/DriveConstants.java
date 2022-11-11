@@ -8,7 +8,7 @@ public class DriveConstants {
 
     public final double kTrackWidth = Units.inchesToMeters(22.75);
     public final double kDriveGearRatio = 6.75;
-    public final double kSteerGearRatio = 150.0 / 7;
+    public final double kSteerGearRatio = 12.8;
 
     public final double kMaxSpeed = 0.75 * Constants.kFalconMaxRPM / 60.0 / kDriveGearRatio * kWheelRadius * 2 * Math.PI;
 
