@@ -59,15 +59,15 @@ public class ShuffleboardManager {
     // m_driveTab.addNumber("BL desired angle", () -> Robot.drive.swerveModuleStates[2].angle.getDegrees());
     // m_driveTab.addNumber("BR desired angle", () -> Robot.drive.swerveModuleStates[3].angle.getDegrees());
 
-    m_driveTab.addNumber("FL FF", () -> Robot.drive.m_frontLeft.turnFeedforward);
-    m_driveTab.addNumber("FR FF", () -> Robot.drive.m_frontRight.turnFeedforward);
-    m_driveTab.addNumber("BL FF", () -> Robot.drive.m_backLeft.turnFeedforward);
-    m_driveTab.addNumber("BR FF", () -> Robot.drive.m_backRight.turnFeedforward);
+    // m_driveTab.addNumber("FL FF", () -> Robot.drive.m_frontLeft.turnFeedforward);
+    // m_driveTab.addNumber("FR FF", () -> Robot.drive.m_frontRight.turnFeedforward);
+    // m_driveTab.addNumber("BL FF", () -> Robot.drive.m_backLeft.turnFeedforward);
+    // m_driveTab.addNumber("BR FF", () -> Robot.drive.m_backRight.turnFeedforward);
 
-    m_driveTab.addNumber("FL PID Output", () -> Robot.drive.m_frontLeft.turnOutput);
-    m_driveTab.addNumber("FR PID Output", () -> Robot.drive.m_frontRight.turnOutput);
-    m_driveTab.addNumber("BL PID Output", () -> Robot.drive.m_backLeft.turnOutput);
-    m_driveTab.addNumber("BR PID Output", () -> Robot.drive.m_backRight.turnOutput);
+    // m_driveTab.addNumber("FL PID Output", () -> Robot.drive.m_frontLeft.turnOutput);
+    // m_driveTab.addNumber("FR PID Output", () -> Robot.drive.m_frontRight.turnOutput);
+    // m_driveTab.addNumber("BL PID Output", () -> Robot.drive.m_backLeft.turnOutput);
+    // m_driveTab.addNumber("BR PID Output", () -> Robot.drive.m_backRight.turnOutput);
 
 
     // m_driveTab.addNumber("Vel Front Right", () -> Robot.drive.m_frontRight.getDriveVelocity());
@@ -77,6 +77,16 @@ public class ShuffleboardManager {
     // m_driveTab.addNumber("Vel Front Left", () -> Robot.drive.m_frontLeft.getDriveVelocity());
     // m_driveTab.addNumber("Drive Output Front Left", () -> Robot.drive.m_frontLeft.driveOutput);
     // m_driveTab.add("FL Drive PID", Robot.drive.m_frontLeft.getDrivePID());
+
+    m_driveTab.addNumber("FL average time to turn", () -> Robot.drive.m_frontLeft.getAverageTurnTime());
+    m_driveTab.addNumber("FR average time to turn", () -> Robot.drive.m_frontRight.getAverageTurnTime());
+    m_driveTab.addNumber("BL average time to turn", () -> Robot.drive.m_backLeft.getAverageTurnTime());
+    m_driveTab.addNumber("BR average time to turn", () -> Robot.drive.m_backRight.getAverageTurnTime());
+
+    m_driveTab.addBoolean("FL isturning", () -> Robot.drive.m_frontLeft.isTurning);
+    m_driveTab.addBoolean("FR isturning", () -> Robot.drive.m_frontRight.isTurning);
+    m_driveTab.addBoolean("BL isturning", () -> Robot.drive.m_backLeft.isTurning);
+    m_driveTab.addBoolean("BR isturning", () -> Robot.drive.m_backRight.isTurning);
   }
 
 }
