@@ -1,7 +1,9 @@
+package frc.robot.commands.Auto;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.security.sasl.SaslException;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -52,12 +54,12 @@ public class PathPlannerCommand extends SequentialCommandGroup{
         } 
         PathPlannerTrajectory path = pathGroup.get(pathIndex);  
         addCommands(
-            (pathIndex == 0 && resetPose ? new InstantCommand(() -> m_drive.resetOdometry() : new DoNothing()),
+            (pathIndex == 0 && resetPose ? new InstantCommand(() -> m_drive.resetOdometry(m_drive.getPose(), m_drive.getRotation2d())) : new DoNothing()),
             new PrintCommand("Number of paths: " + pathGroup.size()),
             new PPSwerveControllerCommand(
                 path, 
                 m_drive::getPose, // Pose supplier
-                this.kinematics, // SwerveDriveKinematics
+                m_drive.kinematics, // SwerveDriveKinematics
                 new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
                 new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.

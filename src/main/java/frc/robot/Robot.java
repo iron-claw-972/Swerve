@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -27,6 +30,8 @@ public class Robot extends TimedRobot {
   private Command m_autoCommand;
   public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
   public static Drivetrain drive = new Drivetrain();
+  public static WPI_Pigeon2 pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kCanivoreCAN);
+ 
 
   /**
    * This function is run when the robot is first started up and should be used for any

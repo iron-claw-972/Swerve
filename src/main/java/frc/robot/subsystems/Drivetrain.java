@@ -101,8 +101,12 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose, Rotation2d gyroAngle ){
       m_odometry.resetPosition(pose, gyroAngle);
-
   }
+
+  public Rotation2d getRotation2d(){
+    return m_pigeon.getRotation2d(); 
+  }
+
 
   public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
@@ -110,6 +114,7 @@ public class Drivetrain extends SubsystemBase {
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
   }
+
 
 
 }
