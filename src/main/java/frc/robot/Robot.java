@@ -30,7 +30,6 @@ public class Robot extends TimedRobot {
   private Command m_autoCommand;
   public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
   public static Drivetrain drive = new Drivetrain();
-  public static WPI_Pigeon2 pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kCanivoreCAN);
  
 
   /**

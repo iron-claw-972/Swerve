@@ -1,8 +1,6 @@
-package frc.robot.commands.Auto;
+package frc.robot.commands.auto;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.security.sasl.SaslException;
-
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
