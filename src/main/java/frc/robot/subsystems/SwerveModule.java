@@ -81,6 +81,8 @@ public class SwerveModule {
     m_turningPIDController.enableContinuousInput(-Math.PI + m_offset, Math.PI + m_offset);
 
     m_steerMotor.setInverted(true);
+
+    m_turningPIDController.reset(getAngle()); // reset the PID, and the Trapezoid motion profile needs to know the starting state
   }
 
   /**
@@ -94,6 +96,10 @@ public class SwerveModule {
 
   public ProfiledPIDController getSteerPID() {
     return m_turningPIDController;
+  }
+
+  public void resetSteerPID(double angle) {
+    m_turningPIDController.reset(angle);
   }
 
   public double turnFeedforward = 0.0;
