@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.Robot;
+import frc.robot.commands.auto.PathPlannerCommand;
+import frc.robot.commands.auto.Routines.TestAuto;
 
 public class ShuffleboardManager {
 
@@ -35,6 +37,8 @@ public class ShuffleboardManager {
 
   public void chooserUpdate() {
     m_autoCommand.addOption("Do Nothing", new PrintCommand("This will do nothing!"));
+    m_autoCommand.setDefaultOption("TestAuto", new PathPlannerCommand("TestAuto", 0)); 
+
   }
 
   public void loadCommandSchedulerShuffleboard(){

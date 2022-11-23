@@ -19,7 +19,7 @@ public class PathGroupLoader{
 
   private static HashMap<String, ArrayList<PathPlannerTrajectory>> pathGroups = new HashMap<String, ArrayList<PathPlannerTrajectory>>();
 
-  public static void loadPaths() {
+  public static void loadPathGroups() {
     double totalTime = 0;
     File[] directoryListing = Filesystem.getDeployDirectory().toPath().resolve(Constants.auto.kTrajectoryDirectory).toFile().listFiles();
     if (directoryListing != null) {
@@ -34,6 +34,7 @@ public class PathGroupLoader{
         }
       }
     } else {
+      System.out.println("Error processing file");
       DriverStation.reportWarning(
         "Issue with finding path files. Paths will not be loaded.",
         true
@@ -43,6 +44,9 @@ public class PathGroupLoader{
   }
 
   public static ArrayList<PathPlannerTrajectory> getPathGroup(String pathGroupName) {
+    if (pathGroups.get(pathGroupName) == null) {
+      System.out.println("Error retriving " + pathGroupName + " path!");
+    }
     return pathGroups.get(pathGroupName);
   }
 
