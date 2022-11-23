@@ -27,12 +27,12 @@ public class SwerveModule {
   private final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP, Constants.drive.kDriveI,
       Constants.drive.kDriveD);
 
-  private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
+  private ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
       Constants.drive.kSteerP,
       Constants.drive.kSteerI,
       Constants.drive.kSteerD,
       new TrapezoidProfile.Constraints(
-          Constants.drive.kMaxAngularSpeed, 2 * Math.PI));
+          Constants.drive.kMaxAngularSpeed, Constants.drive.kMaxAngularAccel));
 
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS,
       Constants.drive.kDriveKV);
@@ -81,6 +81,8 @@ public class SwerveModule {
     m_turningPIDController.enableContinuousInput(-Math.PI + m_offset, Math.PI + m_offset);
 
     m_steerMotor.setInverted(true);
+
+    m_turningPIDController.reset(getAngle()); // reset the PID, and the Trapezoid motion profile needs to know the starting state
   }
 
   /**
@@ -94,6 +96,10 @@ public class SwerveModule {
 
   public ProfiledPIDController getSteerPID() {
     return m_turningPIDController;
+  }
+
+  public void resetSteerPID(double angle) {
+    m_turningPIDController.reset(angle);
   }
 
   public double turnFeedforward = 0.0;
@@ -122,7 +128,7 @@ public class SwerveModule {
 
     turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-    // m_driveMotor.setVoltage(driveOutput + driveFeedforward);
+    m_driveMotor.setVoltage(driveOutput + driveFeedforward);
     m_steerMotor.setVoltage(turnOutput + turnFeedforward); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()
   }
 
