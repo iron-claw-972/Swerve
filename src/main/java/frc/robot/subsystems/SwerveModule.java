@@ -128,7 +128,7 @@ public class SwerveModule {
 
     turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-    // m_driveMotor.setVoltage(driveOutput + driveFeedforward);
+    m_driveMotor.setVoltage(driveOutput + driveFeedforward);
     m_steerMotor.setVoltage(turnOutput + turnFeedforward); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()
   }
 
