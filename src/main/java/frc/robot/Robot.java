@@ -6,8 +6,9 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
-import org.littletonrobotics.junction.io.LogSocketServer;
+import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.constants.Constants;
 import frc.robot.controls.Driver;
 import frc.robot.controls.Operator;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -30,138 +32,146 @@ import frc.robot.util.ShuffleboardManager;
  * project.
  */
 public class Robot extends LoggedRobot {
-    private Command m_autoCommand;
-    public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
-    public static Drivetrain drive;
+  private Command m_autoCommand;
+  public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
+  public static Drivetrain drive;
 
-    private final Field2d m_field = new Field2d();
+  private final Field2d m_field = new Field2d();
 
-    public static boolean isReal;
+  public static boolean isReal;
 
-    /**
-     * This function is run when the robot is first started up and should be used for any
-     * initialization code.
-     */
-    @Override
-    public void robotInit() {
+  /**
+   * This function is run when the robot is first started up and should be used for any
+   * initialization code.
+   */
+  @Override
+  public void robotInit() {
 
-        isReal = isReal();
+    isReal = isReal();
 
-        drive = new Drivetrain();
+    drive = new Drivetrain();
 
-        setUseTiming(isReal()); // Run as fast as possible during replay
-        LoggedNetworkTables.getInstance().addTable("/972"); // Log & replay "SmartDashboard" values (no tables are logged by default).
-        Logger.getInstance().recordMetadata("ProjectName", "SwerveDriveTesting"); // Set a metadata value
-        Logger.getInstance().addDataReceiver(new LogSocketServer(5800));
-
-        // This is really annoying so it's disabled
-        DriverStation.silenceJoystickConnectionWarning(true);
-
-        shuffleboard.setup();
-
-        Driver.configureControls();
-        Operator.configureControls();
-
-        drive.setDefaultCommand(new DefaultDriveCommand(drive));
-    
-        Logger.getInstance().start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
-
-        Pose2d startPosition = new Pose2d(Units.inchesToMeters(30),Units.inchesToMeters(30), new Rotation2d(Units.degreesToRadians(0)));
-        m_field.setRobotPose(startPosition);
-
-        SmartDashboard.putData("Field", m_field);
+    setUseTiming(isReal); // Run as fast as possible during replay
+    if (Robot.isReal) {
+      String folder = Constants.kLogFolder;
+      if (folder == null) {
+        System.out.println("No log folder found in Constants.java.");
+        DriverStation.reportWarning("No log folder found in Constants.java.", false);
+      } else {
+        Logger.getInstance().addDataReceiver(new WPILOGWriter(folder));
+      }
+      Logger.getInstance().addDataReceiver(new NT4Publisher());
+      LoggedPowerDistribution.getInstance();
+    } else {
+      Logger.getInstance().addDataReceiver(new NT4Publisher());
     }
 
-    @Override
-    public void simulationPeriodic() {
-        SmartDashboard.putData("Field", m_field);
-        m_field.setRobotPose(drive.getRobotPosition());
-    }
+    // This is really annoying so it's disabled
+    DriverStation.silenceJoystickConnectionWarning(true);
 
-    /**
-     * This function is called every robot packet, no matter the mode. Use this for items like
-     * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-     *
-     * <p>This runs after the mode specific periodic functions, but before
-     * LiveWindow and SmartDashboard integrated updating.
-     */
-    @Override
-    public void robotPeriodic() {
-        // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-        // commands, running already-scheduled commands, removing finished or interrupted commands,
-        // and running subsystem periodic() methods.  This must be called from the robot's periodic
-        // block in order for anything in the Command-based framework to work.
-        CommandScheduler.getInstance().run();
-    }
+    shuffleboard.setup();
 
-    /**
-     * This function is called once each time the robot en
-     * rs Disabled mode.
-     */
-    @Override
-    public void disabledInit() {
-        CommandScheduler.getInstance().cancelAll();
-    }
+    Driver.configureControls();
+    Operator.configureControls();
 
-    @Override
-    public void disabledPeriodic() {
-        m_autoCommand = getAutonomousCommand();
-    }
+    drive.setDefaultCommand(new DefaultDriveCommand(drive));
 
-    /**
-     * This autonomous runs the autonomous command selected by your {@link Robot} class.
-     */
-    @Override
-    public void autonomousInit() {
-        if (m_autoCommand != null) {
-            m_autoCommand.schedule();
-        }
-    }
+    Logger.getInstance().start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
-    /**
-     * This function is called periodically during autonomous.
-     */
-    @Override
-    public void autonomousPeriodic() {
-    }
+    m_field.setRobotPose(new Pose2d(Units.inchesToMeters(30),Units.inchesToMeters(30), new Rotation2d(Units.degreesToRadians(0))));
+    SmartDashboard.putData("Field", m_field);
+  }
 
-    @Override
-    public void teleopInit() {
-        // This makes sure that the autonomous stops running when
-        // teleop starts running. If you want the autonomous to
-        // continue until interrupted by another command, remove
-        // this line or comment it out.
-        if (m_autoCommand != null) {
-            m_autoCommand.cancel();
-        }
-    }
+  @Override
+  public void simulationPeriodic() {
+    SmartDashboard.putData("Field", m_field);
+    m_field.setRobotPose(drive.getRobotPosition());
+  }
 
-    /**
-     * This function is called periodically during operator control.
-     */
-    @Override
-    public void teleopPeriodic() {
-    }
+  /**
+   * This function is called every robot packet, no matter the mode. Use this for items like
+   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
+   *
+   * <p>This runs after the mode specific periodic functions, but before
+   * LiveWindow and SmartDashboard integrated updating.
+   */
+  @Override
+  public void robotPeriodic() {
+    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+    // commands, running already-scheduled commands, removing finished or interrupted commands,
+    // and running subsystem periodic() methods.  This must be called from the robot's periodic
+    // block in order for anything in the Command-based framework to work.
+    CommandScheduler.getInstance().run();
+  }
 
-    @Override
-    public void testInit() {
-        // Cancels all running commands at the start of test mode.
-        CommandScheduler.getInstance().cancelAll();
-    }
+  /**
+   * This function is called once each time the robot en
+   * rs Disabled mode.
+   */
+  @Override
+  public void disabledInit() {
+    CommandScheduler.getInstance().cancelAll();
+  }
 
-    /**
-     * This function is called periodically during test mode.
-     */
-    @Override
-    public void testPeriodic() {
-    }
+  @Override
+  public void disabledPeriodic() {
+    m_autoCommand = getAutonomousCommand();
+  }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        return shuffleboard.getAutonomousCommand();
+  /**
+   * This autonomous runs the autonomous command selected by your {@link Robot} class.
+   */
+  @Override
+  public void autonomousInit() {
+    if (m_autoCommand != null) {
+        m_autoCommand.schedule();
     }
+  }
+
+  /**
+   * This function is called periodically during autonomous.
+   */
+  @Override
+  public void autonomousPeriodic() {
+  }
+
+  @Override
+  public void teleopInit() {
+    // This makes sure that the autonomous stops running when
+    // teleop starts running. If you want the autonomous to
+    // continue until interrupted by another command, remove
+    // this line or comment it out.
+    if (m_autoCommand != null) {
+        m_autoCommand.cancel();
+    }
+  }
+
+  /**
+   * This function is called periodically during operator control.
+   */
+  @Override
+  public void teleopPeriodic() {
+  }
+
+  @Override
+  public void testInit() {
+    // Cancels all running commands at the start of test mode.
+    CommandScheduler.getInstance().cancelAll();
+  }
+
+  /**
+   * This function is called periodically during test mode.
+   */
+  @Override
+  public void testPeriodic() {
+  }
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    return shuffleboard.getAutonomousCommand();
+  }
 }

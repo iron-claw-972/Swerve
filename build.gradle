@@ -1,8 +1,6 @@
-import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
-
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2022.4.1"
+    id "edu.wpi.first.GradleRIO" version "2023.1.1-beta-4"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -48,7 +46,7 @@ wpi.java.debugJni = false
 def includeDesktopSupport = true
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
-// Also defines JUnit 4.
+// Also defines JUnit 5.
 dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
@@ -67,8 +65,16 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:3.+'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+
+    annotationProcessor "org.littletonrobotics.akit.junction:junction-autolog:2.0.0-beta-1"
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -89,6 +95,11 @@ deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
 
+// Configure string concat to always inline compile
+tasks.withType(JavaCompile) {
+    options.compilerArgs.add '-XDstringConcat=inline'
+}
+
 repositories {
     maven {
         url = uri("https://maven.pkg.github.com/Mechanical-Advantage/AdvantageKit")
@@ -102,4 +113,13 @@ repositories {
 
 configurations.all {
     exclude group: "edu.wpi.first.wpilibj"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs "src/main/java"
+            srcDirs "build/generated/sources/annotationProcessor/java/main"
+        }
+    }
 }

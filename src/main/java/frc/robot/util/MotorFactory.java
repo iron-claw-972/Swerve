@@ -102,6 +102,7 @@ public class MotorFactory {
     sparkMAX.burnFlash();
     return sparkMAX;
   }
+  
 
   /**
   * Create a CANSparkMax with default current limiting enabled

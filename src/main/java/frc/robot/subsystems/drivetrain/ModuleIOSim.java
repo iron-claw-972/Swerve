@@ -19,8 +19,8 @@ import frc.robot.constants.Constants;
 public class ModuleIOSim implements ModuleIO {
 
     // TODO: need these values!
-    private FlywheelSim m_driveMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), Constants.drive.kGearRatio, 0.025);
-    private FlywheelSim m_steerMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), Constants.drive.kGearRatioSteer,
+    private FlywheelSim m_driveMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), Constants.drive.kDriveGearRatio, 0.025);
+    private FlywheelSim m_steerMotorSim = new FlywheelSim(DCMotor.getFalcon500(1), Constants.drive.kSteerGearRatio,
             0.004096955);
 
     private final WPI_TalonFX m_driveMotor;
@@ -75,7 +75,7 @@ public class ModuleIOSim implements ModuleIO {
         // distance traveled for one rotation of the wheel divided by the encoder
         // resolution.
         m_driveEncoder.setDistancePerPulse(
-                2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kGearRatio / Constants.kEncoderResolution);
+                2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kDriveGearRatio / Constants.kEncoderResolution);
 
         // Limit the PID Controller's input range between -pi and pi and set the input
         // to be continuous.
