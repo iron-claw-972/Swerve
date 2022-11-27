@@ -1,6 +1,9 @@
 package frc.robot.subsystems.drivetrain;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import ctre_shims.TalonEncoder;
@@ -10,6 +13,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import frc.robot.constants.Constants;
 import edu.wpi.first.math.util.Units;
 
@@ -28,12 +32,15 @@ public class ModuleIOTalon implements ModuleIO {
             Constants.drive.kSteerP,
             Constants.drive.kSteerI,
             Constants.drive.kSteerD,
-            new TrapezoidProfile.Constraints(Constants.drive.kMaxAngularSpeed, 2 * Math.PI));
+            new TrapezoidProfile.Constraints(Constants.drive.kMaxAngularSpeed, Constants.drive.kMaxAngularAccel));
 
     public final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.drive.kDriveKS,
             Constants.drive.kDriveKV);
-    public final SimpleMotorFeedforward m_steerFeedforward = new SimpleMotorFeedforward(Constants.drive.kSteerKS,
+    public final SimpleMotorFeedforward m_turnFeedForward = new SimpleMotorFeedforward(Constants.drive.kSteerKS,
             Constants.drive.kSteerKV);
+
+    public double m_offset = 0.0;
+    public double driveOutput = 0;
 
     public ModuleIOTalon(
             int driveMotorPort,
@@ -42,6 +49,9 @@ public class ModuleIOTalon implements ModuleIO {
             double encoderOffset) {
         m_driveMotor = new WPI_TalonFX(driveMotorPort, Constants.kCanivoreCAN);
         m_steerMotor = new WPI_TalonFX(steerMotorPort, Constants.kCanivoreCAN);
+
+        m_driveMotor.setNeutralMode(NeutralMode.Brake);
+        m_steerMotor.setNeutralMode(NeutralMode.Brake);
 
         m_driveEncoder = new TalonEncoder(m_driveMotor);
         m_encoder = new WPI_CANCoder(encoderPort, Constants.kCanivoreCAN);
@@ -52,17 +62,29 @@ public class ModuleIOTalon implements ModuleIO {
         // make degrees.
         m_encoder.configFactoryDefault();
         m_encoder.setPositionToAbsolute();
-        m_encoder.configMagnetOffset(encoderOffset);
+
+        m_encoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
+
+        m_encoder.configFeedbackCoefficient(2 * Math.PI / Constants.kCANcoderResolution, "rad",
+                SensorTimeBase.PerSecond);
+
+        m_offset = encoderOffset;
 
         // Set the distance per pulse for the drive encoder. We can simply use the
         // distance traveled for one rotation of the wheel divided by the encoder
         // resolution.
         m_driveEncoder.setDistancePerPulse(
-                2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kGearRatio / Constants.kEncoderResolution);
+                2 * Math.PI * Constants.drive.kWheelRadius / Constants.drive.kDriveGearRatio
+                        / Constants.kEncoderResolution);
 
         // Limit the PID Controller's input range between -pi and pi and set the input
-        // to be continuous.
-        m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        // to be continuous. Factor in the offset amount.
+        m_turningPIDController.enableContinuousInput(-Math.PI + m_offset, Math.PI + m_offset);
+
+        m_steerMotor.setInverted(true);
+
+        m_turningPIDController.reset(getAngle()); // reset the PID, and the Trapezoid motion profile needs to know the
+                                                  // starting state
     }
 
     @Override
@@ -88,6 +110,9 @@ public class ModuleIOTalon implements ModuleIO {
                 new Rotation2d(m_encoder.getAbsolutePosition()));
     }
 
+    public double turnFeedforward = 0.0;
+    public double turnOutput = 0.0;
+
     /**
      * Sets the desired state for the module.
      *
@@ -99,22 +124,25 @@ public class ModuleIOTalon implements ModuleIO {
             return;
         }
         // Optimize the reference state to avoid spinning further than 90 degrees
-        desiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(m_encoder.getAbsolutePosition()));
+        desiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(getAngle()));
 
         // Calculate the drive output from the drive PID controller.
-        double driveOutput = m_drivePIDController.calculate(m_driveEncoder.getRate(),
-                desiredState.speedMetersPerSecond);
+        driveOutput = m_drivePIDController.calculate(m_driveEncoder.getRate(), desiredState.speedMetersPerSecond);
 
         final double driveFeedforward = m_driveFeedforward.calculate(desiredState.speedMetersPerSecond);
 
         // Calculate the turning motor output from the turning PID controller.
-        double turnOutput = m_turningPIDController.calculate(Units.degreesToRadians(m_encoder.getAbsolutePosition()),
-                desiredState.angle.getRadians());
+        turnOutput = m_turningPIDController.calculate(getAngle(), desiredState.angle.getRadians());
 
-        final double turnFeedforward = m_steerFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
+        turnFeedforward = m_turnFeedForward.calculate(m_turningPIDController.getSetpoint().velocity);
 
         m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-        m_steerMotor.setVoltage(turnOutput + turnFeedforward);
+        m_steerMotor.setVoltage(turnOutput + turnFeedforward); // * Constants.kMaxVoltage /
+                                                               // RobotController.getBatteryVoltage()
+    }
+
+    public double getAngle() {
+        return m_encoder.getAbsolutePosition() - m_offset;
     }
 
     public void stop() {
@@ -135,7 +163,7 @@ public class ModuleIOTalon implements ModuleIO {
     }
 
     public SimpleMotorFeedforward getSteerFF() {
-        return m_steerFeedforward;
+        return m_turnFeedForward;
     }
 
 }
