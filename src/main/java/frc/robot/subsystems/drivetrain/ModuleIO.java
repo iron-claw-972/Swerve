@@ -52,11 +52,19 @@ public interface ModuleIO {
     }
 
     public void updateInputs(ModuleIOInputs inputs);
-    public default SwerveModuleState getState() { return null; }
+
+    public default SwerveModuleState getState() {
+        return null;
+    }
+
     public void setDesiredState(SwerveModuleState swerveModuleState);
+
     public PIDController getDrivePID();
+
     public ProfiledPIDController getSteerPID();
+
     public SimpleMotorFeedforward getDriveFF();
+
     public SimpleMotorFeedforward getSteerFF();
-    
+
 }
