@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
 /** Represents a swerve drive style drivetrain. */
-public class Drivetrain extends SubsystemBase implements Loggable{
+public class Drivetrain extends SubsystemBase{
 
   private final Translation2d m_frontLeftLocation = new Translation2d(Constants.drive.kTrackWidth / 2, Constants.drive.kTrackWidth / 2);
   private final Translation2d m_frontRightLocation = new Translation2d(Constants.drive.kTrackWidth / 2, -Constants.drive.kTrackWidth / 2);
@@ -20,28 +20,28 @@ public class Drivetrain extends SubsystemBase implements Loggable{
 
   public SwerveModuleState[] swerveModuleStates = new SwerveModuleState[] {new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
 
-  @Log
+  //@Log
   public final SwerveModule m_frontLeft = new SwerveModule(
     Constants.drive.kDriveFrontLeft,
     Constants.drive.kSteerFrontLeft,
     Constants.drive.kEncoderFrontLeft,
     Constants.drive.kSteerOffsetFrontLeft
   );
-  @Log
+  //@Log
   public final SwerveModule m_frontRight = new SwerveModule(
     Constants.drive.kDriveFrontRight,
     Constants.drive.kSteerFrontRight,
     Constants.drive.kEncoderFrontRight,
     Constants.drive.kSteerOffsetFrontRight
   );
-  @Log
+  //@Log
   public final SwerveModule m_backLeft = new SwerveModule(
     Constants.drive.kDriveBackLeft,
     Constants.drive.kSteerBackLeft,
     Constants.drive.kEncoderBackLeft,
     Constants.drive.kSteerOffsetBackLeft
   );
-  @Log
+  //@Log
   public final SwerveModule m_backRight = new SwerveModule(
     Constants.drive.kDriveBackRight,
     Constants.drive.kSteerBackRight,

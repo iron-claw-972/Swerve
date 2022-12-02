@@ -26,7 +26,7 @@ import frc.robot.util.ShuffleboardManager;
 public class Robot extends TimedRobot {
   private Command m_autoCommand;
   // public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
-  @Log
+  //@Log
   public static Drivetrain drive = new Drivetrain();
 
   /**
