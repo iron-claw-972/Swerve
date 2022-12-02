@@ -16,6 +16,7 @@ import frc.robot.controls.Driver;
 import frc.robot.controls.Operator;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.ShuffleboardManager;
+import io.github.oblarg.oblog.annotations.Log;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,7 +26,8 @@ import frc.robot.util.ShuffleboardManager;
  */
 public class Robot extends TimedRobot {
   private Command m_autoCommand;
-  public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
+  // public static ShuffleboardManager shuffleboard = new ShuffleboardManager();
+  @Log
   public static Drivetrain drive = new Drivetrain();
 
   /**
@@ -38,7 +40,7 @@ public class Robot extends TimedRobot {
     // This is really annoying so it's disabled
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    shuffleboard.setup();
+    // shuffleboard.setup();
 
     Driver.configureControls();
     Operator.configureControls();
@@ -129,6 +131,6 @@ public class Robot extends TimedRobot {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return shuffleboard.getAutonomousCommand();
+    return new DoNothing();//shuffleboard.getAutonomousCommand();
   }
 }
