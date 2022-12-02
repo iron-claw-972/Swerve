@@ -23,19 +23,17 @@ import edu.wpi.first.wpilibj.DriverStation;
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
 
-        private WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kCanivoreCAN);
-
         public final ModuleIO[] moduleIOs = new ModuleIO[4];
 
         public ModuleIO[] getModuleIOs() {
                 return moduleIOs;
         }
 
-        private final ModuleIOInputs[] moduleInputs = new ModuleIOInputs[] {
-                        new ModuleIOInputs(),
-                        new ModuleIOInputs(),
-                        new ModuleIOInputs(),
-                        new ModuleIOInputs()
+        private final ModuleIOInputsAutoLogged[] moduleInputs = new ModuleIOInputsAutoLogged[] {
+                new ModuleIOInputsAutoLogged(),
+                new ModuleIOInputsAutoLogged(),
+                new ModuleIOInputsAutoLogged(),
+                new ModuleIOInputsAutoLogged()
         };
 
         private final Translation2d m_frontLeftLocation = new Translation2d(Constants.drive.kTrackWidth / 2,
@@ -53,12 +51,14 @@ public class Drivetrain extends SubsystemBase {
                         m_backLeftLocation,
                         m_backRightLocation);
 
+        private final WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kCanivoreCAN);
+
         private Pose2d m_robotPosition = new Pose2d(0, 0, new Rotation2d());
         private final SwerveDriveOdometry m_odometry;
+        private final SwerveModulePosition[] m_modulePositions = new SwerveModulePosition[4];
 
         public Drivetrain() {
 
-                m_odometry = new SwerveDriveOdometry(m_kinematics, m_pigeon.getRotation2d(), m_robotPosition);
 
                 if (Robot.isReal) {
                         moduleIOs[0] = new ModuleIOTalon(
@@ -103,6 +103,12 @@ public class Drivetrain extends SubsystemBase {
                                         Constants.drive.kEncoderBackRight,
                                         Constants.drive.kSteerOffsetBackRight);
                 }
+                m_modulePositions[0] = new SwerveModulePosition(moduleIOs[0].getState().speedMetersPerSecond, moduleIOs[0].getState().angle);
+                m_modulePositions[1] = new SwerveModulePosition(moduleIOs[1].getState().speedMetersPerSecond, moduleIOs[1].getState().angle);
+                m_modulePositions[2] = new SwerveModulePosition(moduleIOs[2].getState().speedMetersPerSecond, moduleIOs[2].getState().angle);
+                m_modulePositions[3] = new SwerveModulePosition(moduleIOs[3].getState().speedMetersPerSecond, moduleIOs[3].getState().angle);
+
+                m_odometry = new SwerveDriveOdometry(m_kinematics, m_pigeon.getRotation2d(), m_modulePositions, m_robotPosition);
         }
 
         @Override
@@ -213,7 +219,4 @@ public class Drivetrain extends SubsystemBase {
                 return m_robotPosition;
         }
 
-        public Pose2d getRobotPosition() {
-                return m_robotPosition;
-        }
 }
