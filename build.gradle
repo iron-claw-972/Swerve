@@ -44,6 +44,11 @@ def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 // Set to true to use debug for JNI.
 wpi.java.debugJni = false
 
+//jit required for Oblog
+repositories {
+  maven { url 'https://jitpack.io' }
+}
+
 // Set this to true to enable desktop support.
 def includeDesktopSupport = true
 
@@ -69,6 +74,9 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:3.+'
+
+    //Oblog stuff
+    implementation "com.github.Oblarg:Oblog:3.0.3"
 }
 
 // Simulation configuration (e.g. environment variables).
