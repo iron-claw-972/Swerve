@@ -11,9 +11,10 @@ public class DriveConstants {
     public final double kSteerGearRatio = 12.8;
 
     public final double kMaxSpeed = Constants.kFalconMaxRPM / 60.0 / kDriveGearRatio * kWheelRadius * 2 * Math.PI;
+    public final double kMaxAcceleration = 10; // 10 m/s^2
 
     public final double kMaxAngularSpeed = Constants.kFalconMaxRPM / 60.0 / kSteerGearRatio * 2 * Math.PI; // 8.3 rot/s
-    public final double kMaxAngularAccel = 8 * 2 * Math.PI; // 8 rotations per second per second
+    public final double kMaxAngularAccel = 8 * 2 * Math.PI; // 8 rot/s^2
 
     public final int kPigeon = 13;
 

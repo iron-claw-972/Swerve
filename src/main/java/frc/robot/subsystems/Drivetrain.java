@@ -45,6 +45,8 @@ public class Drivetrain extends SubsystemBase {
     Constants.drive.kSteerOffsetBackRight
   );
 
+  private Translation2d m_previousVelocity = new Translation2d();
+
   private final WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kCanivoreCAN);
 
   private final SwerveDriveKinematics m_kinematics =
@@ -71,6 +73,15 @@ public class Drivetrain extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    
+    Translation2d currentAcceleration = (new Translation2d(xSpeed, ySpeed)).minus(m_previousVelocity).times(1 / Constants.kUpdateTime);
+    
+    if (currentAcceleration.getNorm() > Constants.drive.kMaxAcceleration) {
+      double ratio = currentAcceleration.getNorm() / Constants.drive.kMaxAcceleration;
+      xSpeed *= ratio;
+      ySpeed *= ratio;
+    }
+
     swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
@@ -85,12 +96,15 @@ public class Drivetrain extends SubsystemBase {
 
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
+    Translation2d previousTranslation = m_odometry.getPoseMeters().getTranslation();
     m_odometry.update(
         m_pigeon.getRotation2d(),
         m_frontLeft.getState(),
         m_frontRight.getState(),
         m_backLeft.getState(),
         m_backRight.getState());
+
+    m_previousVelocity = m_odometry.getPoseMeters().getTranslation().minus(previousTranslation).times(1 / Constants.kUpdateTime);
   }
 
 }
