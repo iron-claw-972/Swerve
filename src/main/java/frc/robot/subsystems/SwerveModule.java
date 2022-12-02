@@ -16,12 +16,17 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
-public class SwerveModule {
+public class SwerveModule implements Loggable{
+  
   private final WPI_TalonFX m_driveMotor;
   private final WPI_TalonFX m_steerMotor;
 
+  @Log
   private final TalonEncoder m_driveEncoder;
+  @Log
   private final WPI_CANCoder m_encoder;
 
   private final PIDController m_drivePIDController = new PIDController(Constants.drive.kDriveP, Constants.drive.kDriveI,
@@ -41,6 +46,7 @@ public class SwerveModule {
 
   public double m_offset = 0.0;
 
+  @Log
   public double driveOutput = 0;
 
   public SwerveModule(
@@ -94,6 +100,7 @@ public class SwerveModule {
     return new SwerveModuleState(m_driveMotor.getSelectedSensorVelocity(), new Rotation2d(getAngle()));
   }
 
+  @Log
   public ProfiledPIDController getSteerPID() {
     return m_turningPIDController;
   }
@@ -102,7 +109,9 @@ public class SwerveModule {
     m_turningPIDController.reset(angle);
   }
 
+  @Log
   public double turnFeedforward = 0.0;
+  @Log
   public double turnOutput = 0.0;
 
   /**
@@ -132,14 +141,17 @@ public class SwerveModule {
     m_steerMotor.setVoltage(turnOutput + turnFeedforward); // * Constants.kMaxVoltage / RobotController.getBatteryVoltage()
   }
 
+  @Log
   public double getAngle() {
     return m_encoder.getAbsolutePosition() - m_offset;
   }
 
+  @Log
   public double getDriveVelocity() {
     return m_driveEncoder.getRate();
   }
 
+  @Log
   public PIDController getDrivePID() {
     return m_drivePIDController;
   }

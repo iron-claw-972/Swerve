@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import io.github.oblarg.oblog.annotations.Log;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
@@ -20,24 +21,28 @@ public class Drivetrain extends SubsystemBase {
 
   public SwerveModuleState[] swerveModuleStates = new SwerveModuleState[] {new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
 
+  @Log
   public final SwerveModule m_frontLeft = new SwerveModule(
     Constants.drive.kDriveFrontLeft,
     Constants.drive.kSteerFrontLeft,
     Constants.drive.kEncoderFrontLeft,
     Constants.drive.kSteerOffsetFrontLeft
   );
+  @Log
   public final SwerveModule m_frontRight = new SwerveModule(
     Constants.drive.kDriveFrontRight,
     Constants.drive.kSteerFrontRight,
     Constants.drive.kEncoderFrontRight,
     Constants.drive.kSteerOffsetFrontRight
   );
+  @Log
   public final SwerveModule m_backLeft = new SwerveModule(
     Constants.drive.kDriveBackLeft,
     Constants.drive.kSteerBackLeft,
     Constants.drive.kEncoderBackLeft,
     Constants.drive.kSteerOffsetBackLeft
   );
+  @Log
   public final SwerveModule m_backRight = new SwerveModule(
     Constants.drive.kDriveBackRight,
     Constants.drive.kSteerBackRight,
