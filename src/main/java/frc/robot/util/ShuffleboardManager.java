@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.Robot;
 import frc.robot.commands.auto.PathPlannerCommand;
-import frc.robot.commands.auto.Routines.TestAuto;
+import frc.robot.commands.auto.routines.TestAuto;
 
 public class ShuffleboardManager {
 

@@ -61,7 +61,7 @@ public class PathPlannerCommand extends SequentialCommandGroup{
                 m_drive.kinematics, // SwerveDriveKinematics
                 new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-                new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                new PIDController(1, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 m_drive::setModuleStates, // Module states consumer
                 //eventMap, // This argument is optional if you don't use event markers
                 m_drive // Requires this drive subsystem
