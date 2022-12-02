@@ -76,7 +76,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:3.+'
 
     //Oblog stuff
-    implementation "com.github.Oblarg:Oblog:3.0.3"
+    implementation "com.github.Oblarg:Oblog:5.1.0"
 }
 
 // Simulation configuration (e.g. environment variables).
