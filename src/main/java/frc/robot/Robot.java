@@ -16,7 +16,6 @@ import frc.robot.controls.Driver;
 import frc.robot.controls.Operator;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.ShuffleboardManager;
-import io.github.oblarg.oblog.annotations.Log;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
