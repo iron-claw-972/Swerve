@@ -32,7 +32,9 @@ public class Functions {
     }
   }
 
-  //is an exponential function that maintains positive or negative
+  /**
+   * an exponential function that maintains positive or negative 
+  */ 
   public static double expoMS(double exponent, double base) {
     //weird stuff will happen if you don't put a number > 0
     double finVal = Math.pow(Math.abs(base),exponent);
