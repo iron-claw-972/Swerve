@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -9,8 +10,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.constants.Constants;
+import frc.robot.util.ShuffleboardManager;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
@@ -55,12 +59,17 @@ public class Drivetrain extends SubsystemBase {
 
   private final SwerveDriveOdometry m_odometry;
 
+  private PIDController xController = new PIDController(0, 0, 0);
+  private PIDController yController = new PIDController(0, 0, 0);
+  private PIDController rotationController = new PIDController(0.1, 0, 0);
+
   public Drivetrain() {
     m_odometry = new SwerveDriveOdometry(kinematics, m_pigeon.getRotation2d());
   }
 
   @Override
   public void periodic() {
+    
     updateOdometry();
   }
 
@@ -107,6 +116,14 @@ public class Drivetrain extends SubsystemBase {
     return m_pigeon.getRotation2d(); 
   }
 
+  /**
+   * Gets the angle heading from the pigeon
+   * @return the heading angle in radians, from -pi to pi
+   */
+  public double getAngle() {
+    Rotation2d angle = m_pigeon.getRotation2d();
+    return Math.atan2(angle.getSin(), angle.getCos());
+  }
 
   public void setModuleStates(SwerveModuleState[] swerveModuleStates) {
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
@@ -115,6 +132,15 @@ public class Drivetrain extends SubsystemBase {
     m_backRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  public PIDController getXController() {
+      return xController;
+  }
+  public PIDController getYController() {
+      return yController;
+  }
+  public PIDController getRotationController() {
+    return rotationController;
+  }
 
 
 }

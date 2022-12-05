@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -10,17 +11,22 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.Robot;
 import frc.robot.commands.auto.PathPlannerCommand;
-import frc.robot.commands.auto.routines.TestAuto;
 
 public class ShuffleboardManager {
 
   SendableChooser<Command> m_autoCommand = new SendableChooser<>();
 
   ShuffleboardTab m_mainTab = Shuffleboard.getTab("Main");
-  ShuffleboardTab m_driveTab = Shuffleboard.getTab("Drive");
+  public ShuffleboardTab m_driveTab = Shuffleboard.getTab("Drive");
   ShuffleboardTab m_autoTab = Shuffleboard.getTab("Auto");
 
+  NetworkTableEntry m_heading = m_driveTab.add("Set Heading", 0).getEntry();
+
   NetworkTableEntry m_commandScheduler = m_mainTab.add("Command Scheduler", "NULL").getEntry();
+
+  public NetworkTableEntry getHeadingEntry() {
+    return m_heading;
+  }
   
   public void setup() {
     LiveWindow.disableAllTelemetry(); // LiveWindow is causing periodic loop overruns
@@ -29,6 +35,11 @@ public class ShuffleboardManager {
 
     m_autoTab.add("Auto Chooser", m_autoCommand);
     setupDrivetrain();
+
+    m_driveTab.add("xController", Robot.drive.getXController());
+    m_driveTab.add("yController", Robot.drive.getYController());
+    m_driveTab.add("rotationController", Robot.drive.getRotationController());
+    m_driveTab.addNumber("getAngle", () -> Units.degreesToRadians(Robot.drive.getAngle()));
   }
 
   public Command getAutonomousCommand() {

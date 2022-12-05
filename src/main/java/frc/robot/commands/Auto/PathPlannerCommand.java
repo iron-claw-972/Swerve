@@ -20,6 +20,8 @@ import frc.robot.constants.DriveConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.PathGroupLoader;
 
+
+
 // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
 public class PathPlannerCommand extends SequentialCommandGroup{
     private Drivetrain m_drive;
@@ -55,13 +57,13 @@ public class PathPlannerCommand extends SequentialCommandGroup{
         addCommands(
             (pathIndex == 0 && resetPose ? new InstantCommand(() -> m_drive.resetOdometry(path.getInitialHolonomicPose(), m_drive.getRotation2d())) : new DoNothing()),
             new PrintCommand("Number of paths: " + pathGroup.size()),
-            new PPSwerveControllerCommand(
+            new PPSwerveCommand(
                 path, 
                 m_drive::getPose, // Pose supplier
                 m_drive.kinematics, // SwerveDriveKinematics
-                new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
-                new PIDController(1, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                Robot.drive.getXController(), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                Robot.drive.getYController(), // Y controller (usually the same values as X controller)
+                Robot.drive.getRotationController(), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 m_drive::setModuleStates, // Module states consumer
                 //eventMap, // This argument is optional if you don't use event markers
                 m_drive // Requires this drive subsystem
