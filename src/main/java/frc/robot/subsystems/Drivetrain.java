@@ -99,9 +99,9 @@ public class Drivetrain extends SubsystemBase {
 
   private void runHeadingPID() {
     double headingOutput = rotationController.calculate(getAngle(), Robot.shuffleboard.getRequestedHeading()); // should be in rad/s
-      
+    
     // headingOutput is in rad/s. Need to convert to m/s by multiplying by radius
-    headingOutput *= Math.sqrt(0.5 * Constants.drive.kTrackWidth * Constants.drive.kTrackWidth);
+    headingOutput *= Math.sqrt(0.5) * Constants.drive.kTrackWidth;
 
     swerveModuleStates = new SwerveModuleState[] {
       new SwerveModuleState(headingOutput, new Rotation2d(Units.degreesToRadians(45))),
