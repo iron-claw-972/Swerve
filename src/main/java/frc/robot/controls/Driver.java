@@ -1,13 +1,10 @@
 package frc.robot.controls;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import frc.robot.Robot;
-import frc.robot.commands.DoNothing;
 import frc.robot.constants.Constants;
 import frc.robot.util.Functions;
 import lib.controllers.GameController;
 import lib.controllers.GameController.Axis;
-import lib.controllers.GameController.Button;
 
 public class Driver {
   private static GameController driver = new GameController(Constants.oi.kDriverJoy);

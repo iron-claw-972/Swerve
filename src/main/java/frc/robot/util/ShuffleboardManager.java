@@ -20,20 +20,21 @@ public class ShuffleboardManager {
   public ShuffleboardTab m_driveTab = Shuffleboard.getTab("Drive");
   ShuffleboardTab m_autoTab = Shuffleboard.getTab("Auto");
 
-  NetworkTableEntry m_heading = m_driveTab.add("Set Heading", 0).getEntry();
+  NetworkTableEntry m_heading = m_driveTab.add("Set Heading (-pi to pi)", 0).getEntry();
 
   NetworkTableEntry m_commandScheduler = m_mainTab.add("Command Scheduler", "NULL").getEntry();
 
-  public NetworkTableEntry getHeadingEntry() {
-    return m_heading;
-  }
+  SendableChooser<PracticeModeType> m_practiceMode = new SendableChooser<>();
   
   public void setup() {
     LiveWindow.disableAllTelemetry(); // LiveWindow is causing periodic loop overruns
 
-    chooserUpdate();
+    autoChooserUpdate();
+    practiceChooserUpdate();
 
     m_autoTab.add("Auto Chooser", m_autoCommand);
+    m_mainTab.add("Practice Mode Type Chooser", m_practiceMode);
+
     setupDrivetrain();
 
     m_driveTab.add("xController", Robot.drive.getXController());
@@ -46,10 +47,22 @@ public class ShuffleboardManager {
     return m_autoCommand.getSelected();
   }
 
-  public void chooserUpdate() {
+  public void autoChooserUpdate() {
     m_autoCommand.addOption("Do Nothing", new PrintCommand("This will do nothing!"));
     m_autoCommand.setDefaultOption("TestAuto", new PathPlannerCommand("TestAuto", 0)); 
+  }
 
+  public PracticeModeType getPracticeModeType() {
+    return m_practiceMode.getSelected();
+  }
+
+  public void practiceChooserUpdate() {
+    m_practiceMode.addOption(PracticeModeType.HEADING_PID_TUNE.toString(), PracticeModeType.HEADING_PID_TUNE);
+    m_practiceMode.setDefaultOption(PracticeModeType.NONE.toString(), PracticeModeType.NONE);
+  }
+
+  public double getRequestedHeading() {
+    return m_heading.getDouble(0);
   }
 
   public void loadCommandSchedulerShuffleboard(){
@@ -63,6 +76,10 @@ public class ShuffleboardManager {
     m_driveTab.addNumber("Angle Front Right", () -> Robot.drive.m_frontRight.getAngle());
     m_driveTab.addNumber("Angle Back Left",   () -> Robot.drive.m_backLeft.getAngle());
     m_driveTab.addNumber("Angle Back Right",  () -> Robot.drive.m_backRight.getAngle());
+
+    m_driveTab.addNumber("Gyro X", () -> Robot.drive.getAngularRate(0));
+    m_driveTab.addNumber("Gyro Y", () -> Robot.drive.getAngularRate(1));
+    m_driveTab.addNumber("Gyro Z", () -> Robot.drive.getAngularRate(2));
 
     // m_driveTab.addNumber("FL desired speed", () -> Robot.drive.swerveModuleStates[0].speedMetersPerSecond);
     // m_driveTab.addNumber("FR desired speed", () -> Robot.drive.swerveModuleStates[1].speedMetersPerSecond);
