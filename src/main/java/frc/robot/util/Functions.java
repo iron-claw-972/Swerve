@@ -32,7 +32,9 @@ public class Functions {
     }
   }
 
-  //is an exponential function that maintains positive or negative
+  /**
+   * an exponential function that maintains positive or negative 
+  */ 
   public static double expoMS(double exponent, double base) {
     //weird stuff will happen if you don't put a number > 0
     double finVal = Math.pow(Math.abs(base),exponent);
@@ -83,5 +85,16 @@ public class Functions {
       );
       return null;
     }
+  }
+
+  /**
+   * Checks if a number is within (inclusive) a certain deviation of the target
+   * @param actual the input number to check
+   * @param target the target value
+   * @param deviation the amount they can be within each other
+   * @return if the actual is within devation distance from the target value
+   */
+  public static boolean withinDeviation(double actual, double target, double deviation) {
+    return Math.abs(target-actual) <= deviation;
   }
 }
