@@ -1,10 +1,13 @@
 package frc.robot.controls;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.util.Functions;
 import lib.controllers.GameController;
 import lib.controllers.GameController.Axis;
+import lib.controllers.GameController.Button;
 
 public class Driver {
   private static GameController driver = new GameController(Constants.oi.kDriverJoy);
@@ -14,6 +17,7 @@ public class Driver {
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(0);
 
   public static void configureControls() {
+    driver.get(Button.START).whenPressed(new InstantCommand(() -> Robot.drive.setPigeonYaw(Constants.drive.kStartingHeadingDegrees)));
   }
 
   public static double getForwardTranslation() {
