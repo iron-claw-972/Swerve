@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.constants.Constants;
+import frc.robot.util.MotorFactory;
 
 public class SwerveModule {
   private final WPI_TalonFX m_driveMotor;
@@ -47,8 +48,9 @@ public class SwerveModule {
       int steerMotorPort,
       int encoderPort,
       double encoderOffset) {
-    m_driveMotor = new WPI_TalonFX(driveMotorPort, Constants.kCanivoreCAN);
-    m_steerMotor = new WPI_TalonFX(steerMotorPort, Constants.kCanivoreCAN);
+    
+    m_driveMotor = MotorFactory.createTalonFX(driveMotorPort, Constants.kCanivoreCAN, 40, 80, 1, NeutralMode.Brake, true);
+    m_steerMotor = MotorFactory.createTalonFX(steerMotorPort, Constants.kCanivoreCAN, 30, 60, 1, NeutralMode.Brake, true);
 
     m_driveMotor.setNeutralMode(NeutralMode.Brake);
     m_steerMotor.setNeutralMode(NeutralMode.Brake);
