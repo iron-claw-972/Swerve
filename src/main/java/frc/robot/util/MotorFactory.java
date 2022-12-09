@@ -120,10 +120,11 @@ public class MotorFactory {
   * https://motors.vex.com/vexpro-motors/falcon
   * 
   * @param id the ID of the motor
+  * @param canBus Name of the CANbus; can be a CANivore device name or serial number. Pass in "rio" to use the roboRIO.
   * 
   * @return a fully configured TalonFX
   */
-  public static WPI_TalonFX createTalonFX(int id) {
+  public static WPI_TalonFX createTalonFX(int id, String canBus) {
 
     if (id == -1) return null;
 
@@ -137,7 +138,7 @@ public class MotorFactory {
     
     config.voltageCompSaturation = Constants.kMaxVoltage;
 
-    WPI_TalonFX talon = new WPI_TalonFX(id);
+    WPI_TalonFX talon = new WPI_TalonFX(id, canBus);
     talon.configFactoryDefault();
     talon.configAllSettings(config);
     talon.enableVoltageCompensation(false);
@@ -152,6 +153,7 @@ public class MotorFactory {
   * https://motors.vex.com/vexpro-motors/falcon
   * 
   * @param id the ID of the motor
+  * @param canBus Name of the CANbus; can be a CANivore device name or serial number. Pass in "rio" to use the roboRIO.
   * @param supplyCurrentLimit the regular current to return to after the trigger
   * @param supplyTriggerThreshold The current at which the trigger will activate
   * @param supplyTriggerDuration The amount of time the current must be above the trigger current to reduce current
@@ -160,7 +162,7 @@ public class MotorFactory {
   *
   * @return a fully configured TalonFX
   */
-  public static WPI_TalonFX createTalonFX(int id, double supplyCurrentLimit, double supplyTriggerThreshold, double supplyTriggerDuration , NeutralMode neutralMode, boolean enableVoltageCompensation) {
+  public static WPI_TalonFX createTalonFX(int id, String canBus, double supplyCurrentLimit, double supplyTriggerThreshold, double supplyTriggerDuration , NeutralMode neutralMode, boolean enableVoltageCompensation) {
 
     if (id == -1) return null;
 
@@ -171,7 +173,7 @@ public class MotorFactory {
     
     config.voltageCompSaturation = Constants.kMaxVoltage;
 
-    WPI_TalonFX talon = new WPI_TalonFX(id);
+    WPI_TalonFX talon = new WPI_TalonFX(id, canBus);
     talon.configFactoryDefault();
     talon.configAllSettings(config);
     talon.enableVoltageCompensation(enableVoltageCompensation);
@@ -179,22 +181,6 @@ public class MotorFactory {
     talon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
     return talon;
-  }
-
-  /**
-  * Create a configured TalonFX. Voltage Compensation is disabled.
-  * https://motors.vex.com/vexpro-motors/falcon
-  * 
-  * @param id the ID of the motor
-  * @param supplyCurrentLimit the regular current to return to after the trigger
-  * @param supplyTriggerThreshold The current at which the trigger will activate
-  * @param supplyTriggerDuration The amount of time the current must be above the trigger current to reduce current
-  * @param neutralMode Whether the motor is in coast or brake mode
-  *
-  * @return a fully configured TalonFX
-  */
-  public static WPI_TalonFX createTalonFX(int id, double supplyCurrentLimit, double supplyTriggerThreshold, double supplyTriggerDuration , NeutralMode neutralMode) {
-    return createTalonFX(id, supplyCurrentLimit, supplyTriggerThreshold, supplyTriggerDuration, neutralMode, false);
   }
 
 }
