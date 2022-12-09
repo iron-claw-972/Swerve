@@ -5,6 +5,8 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -51,7 +53,7 @@ public class PathPlannerCommand extends SequentialCommandGroup{
         addCommands(
             (pathIndex == 0 && resetPose ? new InstantCommand(() -> m_drive.resetOdometry(path.getInitialHolonomicPose(), m_drive.getRotation2d())) : new DoNothing()),
             new PrintCommand("Number of paths: " + pathGroup.size()),
-            new PPSwerveCommand(
+            new PPSwerveControllerCommand(
                 path, 
                 m_drive::getPose, // Pose supplier
                 m_drive.kinematics, // SwerveDriveKinematics
