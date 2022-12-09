@@ -52,6 +52,7 @@ public class Drivetrain extends SubsystemBase {
   );
 
   private final WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kCanivoreCAN);
+  private boolean m_hasResetYaw = false;
 
   public final SwerveDriveKinematics kinematics =
       new SwerveDriveKinematics(
@@ -71,6 +72,20 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     
     updateOdometry();
+  }
+
+  public void setPigeonYaw(double degrees) {
+    m_pigeon.setYaw(degrees);
+  }
+
+  /**
+   * Resets the pigeon yaw, but only if it hasn't already been reset. Will reset it to Constants.drive.kStartingHeadingDegrees
+   */
+  public void initializePigeonYaw() {
+    if (!m_hasResetYaw) {
+      m_hasResetYaw = true;
+      setPigeonYaw(Constants.drive.kStartingHeadingDegrees);
+    }
   }
 
   /**

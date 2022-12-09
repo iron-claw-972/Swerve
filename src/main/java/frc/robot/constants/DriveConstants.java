@@ -17,6 +17,8 @@ public class DriveConstants {
 
     public final int kPigeon = 13;
 
+    public final double kStartingHeadingDegrees = 0;
+
     public final int kDriveFrontLeft = 1;
     public final int kSteerFrontLeft = 2;
     public final int kEncoderFrontLeft = 3;
