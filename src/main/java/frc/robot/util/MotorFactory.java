@@ -158,11 +158,10 @@ public class MotorFactory {
   * @param supplyTriggerThreshold The current at which the trigger will activate
   * @param supplyTriggerDuration The amount of time the current must be above the trigger current to reduce current
   * @param neutralMode Whether the motor is in coast or brake mode
-  * @param enableVoltageCompensation Whether to enable Voltage Compensation
   *
   * @return a fully configured TalonFX
   */
-  public static WPI_TalonFX createTalonFX(int id, String canBus, double supplyCurrentLimit, double supplyTriggerThreshold, double supplyTriggerDuration , NeutralMode neutralMode, boolean enableVoltageCompensation) {
+  public static WPI_TalonFX createTalonFX(int id, String canBus, double supplyCurrentLimit, double supplyTriggerThreshold, double supplyTriggerDuration , NeutralMode neutralMode) {
 
     if (id == -1) return null;
 
@@ -176,7 +175,7 @@ public class MotorFactory {
     WPI_TalonFX talon = new WPI_TalonFX(id, canBus);
     talon.configFactoryDefault();
     talon.configAllSettings(config);
-    talon.enableVoltageCompensation(enableVoltageCompensation);
+    talon.enableVoltageCompensation(false);
     talon.setNeutralMode(neutralMode);
     talon.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
