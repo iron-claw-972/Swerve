@@ -21,15 +21,15 @@ public class Driver {
   }
 
   public static double getForwardTranslation() {
-    return -Functions.expoMS(2, Functions.deadband(getRawLeftY(), 0.05) * Constants.drive.kMaxSpeed * 0.25);
+    return -Functions.expoMS(2, Functions.deadband(getRawLeftY(), 0.05)) * Constants.drive.kMaxSpeed * 0.25;
   }
 
   public static double getSideTranslation() {
-    return -Functions.expoMS(2, Functions.deadband(getRawLeftX(), 0.05) * Constants.drive.kMaxSpeed * 0.25);
+    return -Functions.expoMS(2, Functions.deadband(getRawLeftX(), 0.05)) * Constants.drive.kMaxSpeed * 0.25);
   }
 
   public static double getRotation() {
-    return -Functions.expoMS(2, Functions.deadband(getRawRightX(), 0.05) * Constants.drive.kMaxAngularSpeed * 0.25);
+    return -Functions.expoMS(2, Functions.deadband(getRawRightX(), 0.05)) * Constants.drive.kMaxAngularSpeed * 0.25;
   }
 
   public static double getRawRightX() {
