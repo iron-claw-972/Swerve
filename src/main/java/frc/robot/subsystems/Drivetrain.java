@@ -60,6 +60,12 @@ public class Drivetrain extends SubsystemBase {
 
   private final SwerveDriveOdometry m_odometry;
 
+  public boolean isSlewDrive = false;
+
+  public void toggleDriveMode() {
+    isSlewDrive = !isSlewDrive;
+  }
+
   private PIDController xController = new PIDController(0, 0, 0);
   private PIDController yController = new PIDController(0, 0, 0);
   private PIDController rotationController = new PIDController(0.1, 0, 0);
@@ -119,11 +125,12 @@ public class Drivetrain extends SubsystemBase {
     headingOutput *= Math.sqrt(0.5) * Constants.drive.kTrackWidth;
 
     swerveModuleStates = new SwerveModuleState[] {
+      new SwerveModuleState(-headingOutput, new Rotation2d(Units.degreesToRadians(-45))),
       new SwerveModuleState(headingOutput, new Rotation2d(Units.degreesToRadians(45))),
-      new SwerveModuleState(headingOutput, new Rotation2d(Units.degreesToRadians(45))),
-      new SwerveModuleState(headingOutput, new Rotation2d(Units.degreesToRadians(45))),
-      new SwerveModuleState(headingOutput, new Rotation2d(Units.degreesToRadians(45)))
+      new SwerveModuleState(-headingOutput, new Rotation2d(Units.degreesToRadians(45))),
+      new SwerveModuleState(headingOutput, new Rotation2d(Units.degreesToRadians(-45)))
     };
+    setModuleStates(swerveModuleStates);
   }
 
   /** Updates the field relative position of the robot. */

@@ -40,7 +40,7 @@ public class ShuffleboardManager {
     m_driveTab.add("xController", Robot.drive.getXController());
     m_driveTab.add("yController", Robot.drive.getYController());
     m_driveTab.add("rotationController", Robot.drive.getRotationController());
-    m_driveTab.addNumber("getAngle", () -> Units.degreesToRadians(Robot.drive.getAngle()));
+    m_driveTab.addNumber("getAngle", () -> Robot.drive.getAngle());
   }
 
   public Command getAutonomousCommand() {

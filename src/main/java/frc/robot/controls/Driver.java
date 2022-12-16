@@ -12,24 +12,37 @@ import lib.controllers.GameController.Button;
 public class Driver {
   private static GameController driver = new GameController(Constants.oi.kDriverJoy);
   
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(0);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(0);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(0);
+  private static final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(0.1);
+  private static final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(0.1);
+  private static final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(0.1);
 
   public static void configureControls() {
     driver.get(Button.START).whenPressed(new InstantCommand(() -> Robot.drive.setPigeonYaw(Constants.drive.kStartingHeadingDegrees)));
+    driver.get(Button.A).whenPressed(new InstantCommand(() -> Robot.drive.toggleDriveMode()));
   }
 
   public static double getForwardTranslation() {
-    return -Functions.expoMS(2, Functions.deadband(getRawLeftY(), 0.05)) * Constants.drive.kMaxSpeed * 0.25;
+    return -Functions.expoMS(2, Functions.deadband(getRawLeftY(), Constants.oi.kDeadband)) * Constants.drive.kMaxSpeed * 0.5;
   }
 
   public static double getSideTranslation() {
-    return -Functions.expoMS(2, Functions.deadband(getRawLeftX(), 0.05)) * Constants.drive.kMaxSpeed * 0.25);
+    return -Functions.expoMS(2, Functions.deadband(getRawLeftX(), Constants.oi.kDeadband)) * Constants.drive.kMaxSpeed * 0.5;
   }
 
   public static double getRotation() {
-    return -Functions.expoMS(2, Functions.deadband(getRawRightX(), 0.05)) * Constants.drive.kMaxAngularSpeed * 0.25;
+    return -Functions.expoMS(2, Functions.deadband(getRawRightX(), Constants.oi.kDeadband)) * Constants.drive.kMaxAngularSpeed * 0.5;
+  }
+
+  public static double getForwardTranslationSlew() {
+    return -m_xspeedLimiter.calculate(Functions.deadband(getRawLeftY(), Constants.oi.kDeadband)) * Constants.drive.kMaxSpeed * 0.5;
+  }
+
+  public static double getSideTranslationSlew() {
+    return -m_yspeedLimiter.calculate(Functions.deadband(getRawLeftX(), Constants.oi.kDeadband)) * Constants.drive.kMaxSpeed * 0.5;
+  }
+
+  public static double getRotationSlew() {
+    return -m_rotLimiter.calculate(Functions.deadband(getRawRightX(), Constants.oi.kDeadband)) * Constants.drive.kMaxAngularSpeed * 0.5;
   }
 
   public static double getRawRightX() {

@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.controls.Driver;
 import frc.robot.subsystems.Drivetrain;
 
@@ -15,9 +16,16 @@ public class DefaultDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        final var xSpeed = Driver.getForwardTranslation();
-        final var ySpeed = Driver.getSideTranslation();
-        final var rot = Driver.getRotation();
+
+        double xSpeed = Driver.getForwardTranslation();
+        double ySpeed = Driver.getSideTranslation();
+        double rot = Driver.getRotation();
+
+        if (Robot.drive.isSlewDrive) {
+            xSpeed = Driver.getForwardTranslationSlew();
+            ySpeed = Driver.getSideTranslationSlew();
+            rot = Driver.getRotationSlew();
+        }
     
         m_drive.drive(xSpeed, ySpeed, rot, true);
     }

@@ -14,8 +14,10 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.util.MotorFactory;
+import frc.robot.util.PracticeModeType;
 
 public class SwerveModule {
   private final WPI_TalonFX m_driveMotor;
@@ -112,12 +114,15 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    if (Math.abs(desiredState.speedMetersPerSecond) < 0.001) {
+    if (Math.abs(desiredState.speedMetersPerSecond) < 0.001 && Robot.shuffleboard.getPracticeModeType() != PracticeModeType.HEADING_PID_TUNE) {
       stop();
       return;
     }
+
+    if ( Robot.shuffleboard.getPracticeModeType() != PracticeModeType.HEADING_PID_TUNE ) {
     // Optimize the reference state to avoid spinning further than 90 degrees
     desiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(getAngle()));
+    }
 
     // Calculate the drive output from the drive PID controller.
     driveOutput = m_drivePIDController.calculate(m_driveEncoder.getRate(), desiredState.speedMetersPerSecond);
