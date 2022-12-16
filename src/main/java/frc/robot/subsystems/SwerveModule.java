@@ -49,8 +49,8 @@ public class SwerveModule {
       int encoderPort,
       double encoderOffset) {
     
-    m_driveMotor = MotorFactory.createTalonFX(driveMotorPort, Constants.kCanivoreCAN, 40, 80, 1, NeutralMode.Brake, true);
-    m_steerMotor = MotorFactory.createTalonFX(steerMotorPort, Constants.kCanivoreCAN, 30, 60, 1, NeutralMode.Brake, true);
+    m_driveMotor = MotorFactory.createTalonFX(driveMotorPort, Constants.kCanivoreCAN, 40, 80, 1, NeutralMode.Brake);
+    m_steerMotor = MotorFactory.createTalonFX(steerMotorPort, Constants.kCanivoreCAN, 30, 60, 1, NeutralMode.Brake);
 
     m_driveMotor.setNeutralMode(NeutralMode.Brake);
     m_steerMotor.setNeutralMode(NeutralMode.Brake);
