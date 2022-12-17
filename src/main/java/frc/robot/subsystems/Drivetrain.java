@@ -54,6 +54,8 @@ public class Drivetrain extends SubsystemBase {
   private final WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(Constants.drive.kPigeon, Constants.kCanivoreCAN);
   private boolean m_hasResetYaw = false;
 
+  public double headingPIDOutput = 0;
+
   public final SwerveDriveKinematics kinematics =
       new SwerveDriveKinematics(
           m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -104,8 +106,11 @@ public class Drivetrain extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
 
-    if (Robot.shuffleboard.getPracticeModeType() == PracticeModeType.HEADING_PID_TUNE) {
+    if (Robot.shuffleboard.getPracticeModeType() == PracticeModeType.TUNE_HEADING_PID) {
       runHeadingPID();
+      return;
+    } else if (Robot.shuffleboard.getPracticeModeType() == PracticeModeType.TUNE_MODULE_DRIVE) {
+      testDriveVel();
       return;
     }
 
@@ -119,16 +124,27 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private void runHeadingPID() {
-    double headingOutput = rotationController.calculate(getAngle(), Robot.shuffleboard.getRequestedHeading()); // should be in rad/s
+    headingPIDOutput = rotationController.calculate(getAngle(), Robot.shuffleboard.getRequestedHeading()); // should be in rad/s
     
     // headingOutput is in rad/s. Need to convert to m/s by multiplying by radius
-    headingOutput *= Math.sqrt(0.5) * Constants.drive.kTrackWidth;
+    headingPIDOutput *= Math.sqrt(0.5) * Constants.drive.kTrackWidth;
 
     swerveModuleStates = new SwerveModuleState[] {
-      new SwerveModuleState(-headingOutput, new Rotation2d(Units.degreesToRadians(-45))),
-      new SwerveModuleState(headingOutput, new Rotation2d(Units.degreesToRadians(45))),
-      new SwerveModuleState(-headingOutput, new Rotation2d(Units.degreesToRadians(45))),
-      new SwerveModuleState(headingOutput, new Rotation2d(Units.degreesToRadians(-45)))
+      new SwerveModuleState(-headingPIDOutput, new Rotation2d(Units.degreesToRadians(-45))),
+      new SwerveModuleState(headingPIDOutput, new Rotation2d(Units.degreesToRadians(45))),
+      new SwerveModuleState(-headingPIDOutput, new Rotation2d(Units.degreesToRadians(45))),
+      new SwerveModuleState(headingPIDOutput, new Rotation2d(Units.degreesToRadians(-45)))
+    };
+    setModuleStates(swerveModuleStates);
+  }
+
+  private void testDriveVel() {
+    double value = Robot.shuffleboard.getRequestedVelocity();
+    swerveModuleStates = new SwerveModuleState[] {
+      new SwerveModuleState(-value, new Rotation2d(Units.degreesToRadians(-45))),
+      new SwerveModuleState(value, new Rotation2d(Units.degreesToRadians(45))),
+      new SwerveModuleState(-value, new Rotation2d(Units.degreesToRadians(45))),
+      new SwerveModuleState(value, new Rotation2d(Units.degreesToRadians(-45)))
     };
     setModuleStates(swerveModuleStates);
   }

@@ -41,7 +41,7 @@ public class DriveConstants {
 
     // PID
     // Drive
-    public final double kDriveP = 1;
+    public final double kDriveP = 0;
     public final double kDriveI = 0;
     public final double kDriveD = 0;
     // Steer
@@ -51,8 +51,8 @@ public class DriveConstants {
 
     // FEEDFORWARD
     // Drive
-    public final double kDriveKS = 1;
-    public final double kDriveKV = 3;
+    public final double kDriveKS = 0.2;
+    public final double kDriveKV = 2.7;
     // Steer
     public final double kSteerKS = 1;
     public final double kSteerKV = 0.5;

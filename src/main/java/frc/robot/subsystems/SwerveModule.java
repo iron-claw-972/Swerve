@@ -114,12 +114,12 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    if (Math.abs(desiredState.speedMetersPerSecond) < 0.001 && Robot.shuffleboard.getPracticeModeType() != PracticeModeType.HEADING_PID_TUNE) {
+    if (Math.abs(desiredState.speedMetersPerSecond) < 0.001 && Robot.shuffleboard.getPracticeModeType() != PracticeModeType.TUNE_HEADING_PID) {
       stop();
       return;
     }
 
-    if ( Robot.shuffleboard.getPracticeModeType() != PracticeModeType.HEADING_PID_TUNE ) {
+    if ( Robot.shuffleboard.getPracticeModeType() != PracticeModeType.TUNE_HEADING_PID ) {
     // Optimize the reference state to avoid spinning further than 90 degrees
     desiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(getAngle()));
     }
